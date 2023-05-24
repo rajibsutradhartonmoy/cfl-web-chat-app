@@ -13,13 +13,14 @@ function ChatContent() {
 
   const params = useParams();
   const channel = params.channelId;
-  const messages = useMessages(channel);
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const writeMessage = (e) => {
     setMessage(e.target.value);
   };
   const onSendMessage = () => {
     if (message.trim() !== "") {
+      setMessages([...messages, message]);
       sendMessage(channel, user, message);
     }
 
