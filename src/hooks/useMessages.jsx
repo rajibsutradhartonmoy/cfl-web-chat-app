@@ -9,7 +9,6 @@ function useMessages(roomId) {
     return unsubscribe;
   }, [roomId]);
 
-  localStorage.setItem("chatContent", JSON.stringify(messages));
   return messages;
 }
 

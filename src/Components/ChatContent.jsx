@@ -35,11 +35,13 @@ function ChatContent() {
       flex={6}
     >
       <VStack width={"full"} alignItems={"flex-start"}>
-        {messages.map(({ text, id, displayName }) => {
-          return (
-            <ChatCard message={text} key={id} username={`${displayName}`} />
-          );
-        })}
+        {messages.length > 0
+          ? messages.map(({ text, id, displayName }) => {
+              return (
+                <ChatCard message={text} key={id} username={`${displayName}`} />
+              );
+            })
+          : "No message in this channel"}
       </VStack>
       <HStack
         background={"#e3e5e8"}
