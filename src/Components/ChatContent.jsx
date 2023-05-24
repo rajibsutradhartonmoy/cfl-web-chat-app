@@ -1,6 +1,6 @@
-import { HStack, VStack, Text, Textarea } from "@chakra-ui/react";
+import { HStack, VStack, Text, Textarea, Box } from "@chakra-ui/react";
 import { sendMessage } from "../services/firebase";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AiFillPlusCircle, AiOutlineSend } from "react-icons/ai";
 import { ImAttachment } from "react-icons/im";
 import ChatCard from "./ChatCard";
@@ -14,6 +14,8 @@ function ChatContent() {
   const channel = params.channelId;
   const messages = useMessages(channel);
   const [message, setMessage] = useState("");
+  const lastMessageRef = useRef(null);
+
   const writeMessage = (e) => {
     setMessage(e.target.value);
   };
@@ -24,6 +26,10 @@ function ChatContent() {
 
     setMessage("");
   };
+  useEffect(() => {
+    // 👇️ scroll to bottom every time messages change
+    lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   return (
     <VStack
       height={"100vh"}
@@ -33,11 +39,24 @@ function ChatContent() {
       py={"20px"}
       flex={6}
     >
-      <VStack width={"full"} alignItems={"flex-start"}>
+      <VStack
+        width={"full"}
+        alignItems={"flex-start"}
+        height={"800vh"}
+        overflowY={"scroll"}
+      >
+        <Text textAlign={"center"} width={"full"}>
+          Welcome to the {channel} channel.
+        </Text>
         {messages.length > 0 ? (
-          messages.map(({ text, id, displayName }) => {
+          messages.map(({ text, id, displayName, timestamp }) => {
             return (
-              <ChatCard message={text} key={id} username={`${displayName}`} />
+              <ChatCard
+                message={text}
+                key={id}
+                username={displayName}
+                time={timestamp?.toDate().toLocaleString()}
+              />
             );
           })
         ) : (
@@ -45,6 +64,7 @@ function ChatContent() {
             No message in the {channel} channel. Be the first to drop a message!
           </Text>
         )}
+        <Box ref={lastMessageRef}></Box>
       </VStack>
       <HStack
         background={"#e3e5e8"}
