@@ -4,23 +4,21 @@ import React, { useState } from "react";
 import { AiFillPlusCircle, AiOutlineSend } from "react-icons/ai";
 import { ImAttachment } from "react-icons/im";
 import ChatCard from "./ChatCard";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useMessages } from "../hooks/useMessages";
 
 function ChatContent() {
   const { user } = useAuth();
-
   const params = useParams();
   const channel = params.channelId;
-  const [messages, setMessages] = useState([]);
+  const messages = useMessages(channel);
   const [message, setMessage] = useState("");
   const writeMessage = (e) => {
     setMessage(e.target.value);
   };
   const onSendMessage = () => {
     if (message.trim() !== "") {
-      setMessages([...messages, message]);
       sendMessage(channel, user, message);
     }
 
@@ -36,13 +34,17 @@ function ChatContent() {
       flex={6}
     >
       <VStack width={"full"} alignItems={"flex-start"}>
-        {messages.length > 0
-          ? messages.map(({ text, id, displayName }) => {
-              return (
-                <ChatCard message={text} key={id} username={`${displayName}`} />
-              );
-            })
-          : "No message in this channel"}
+        {messages.length > 0 ? (
+          messages.map(({ text, id, displayName }) => {
+            return (
+              <ChatCard message={text} key={id} username={`${displayName}`} />
+            );
+          })
+        ) : (
+          <Text textAlign={"center"} width={"full"}>
+            No message in the {channel} channel. Be the first to drop a message!
+          </Text>
+        )}
       </VStack>
       <HStack
         background={"#e3e5e8"}
