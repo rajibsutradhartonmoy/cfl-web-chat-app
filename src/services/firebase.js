@@ -42,13 +42,14 @@ async function loginWithGoogle() {
   }
 }
 //Write message document to firestore
-async function sendMessage(channelId, user, text) {
+async function sendMessage(channelId, user, text, referenceMessage) {
   try {
     await addDoc(collection(db, "chat-channels", channelId, "messages"), {
       uid: user.uid,
       displayName: user.displayName,
       text: text.trim(),
       timestamp: serverTimestamp(),
+      referenceMessage: referenceMessage,
     });
   } catch (error) {
     console.error(error);
@@ -70,4 +71,5 @@ function getMessages(roomId, callback) {
     }
   );
 }
+// Get single message from firestroe
 export { loginWithGoogle, sendMessage, getMessages };
