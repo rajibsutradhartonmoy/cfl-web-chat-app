@@ -58,6 +58,7 @@ function ChatContent() {
         alignItems={"flex-start"}
         height={"800vh"}
         overflowY={"scroll"}
+        gap={"20px"}
       >
         <Text textAlign={"center"} width={"full"}>
           Welcome to the {channel} channel.
