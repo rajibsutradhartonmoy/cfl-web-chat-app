@@ -11,6 +11,7 @@ import {
   PopoverArrow,
   PopoverBody,
   PopoverCloseButton,
+  Image,
 } from "@chakra-ui/react";
 import React from "react";
 import { BsFillReplyFill } from "react-icons/bs";
@@ -19,6 +20,7 @@ import { AiOutlineEllipsis } from "react-icons/ai";
 const ChatCard = ({
   username,
   time,
+  messageFile,
   image_url,
   message,
   reactions,
@@ -58,59 +60,67 @@ const ChatCard = ({
         ) : (
           ""
         )}
-
-        <HStack width={"full"} alignItems={"center"} gap={"10px"}>
-          <Avatar src="image_url" size={"md"} />
-          <VStack alignItems={"flex-start"}>
-            <HStack alignItems={"center"}>
-              <Text fontWeight={"500"} fontSize={"sm"}>
-                {username}
-              </Text>
-              <Text fontSize={"xs"}>
-                {time
-                  ? time
-                  : `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`}
-              </Text>
-            </HStack>
-            <Text fontSize={"14px"}>{message}</Text>
-            {reactions && (
-              <HStack>
-                {reactions.length > 0
-                  ? reactions.map((reaction) => {
-                      return (
-                        <HStack
-                          fontWeight={"500"}
-                          borderRadius={"10px"}
-                          background={"#e3e5e8"}
-                        >
-                          <Text fontSize={"xs"}>{reaction.icon}</Text>
-                          <Text fontSize={"xs"}>{reaction.count}</Text>
-                        </HStack>
-                      );
-                    })
-                  : ""}
+        <VStack width={"full"} alignItems={"flex-start"}>
+          {messageFile ? (
+            <Box>
+              <Image src={messageFile} maxW={"200px"} borderRadius={"10px"} />
+            </Box>
+          ) : (
+            ""
+          )}
+          <HStack width={"full"} alignItems={"center"} gap={"10px"}>
+            <Avatar src="image_url" size={"md"} />
+            <VStack alignItems={"flex-start"}>
+              <HStack alignItems={"center"}>
+                <Text fontWeight={"500"} fontSize={"sm"}>
+                  {username}
+                </Text>
+                <Text fontSize={"xs"}>
+                  {time
+                    ? time
+                    : `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`}
+                </Text>
               </HStack>
-            )}
-          </VStack>
+              <Text fontSize={"14px"}>{message}</Text>
+              {reactions && (
+                <HStack>
+                  {reactions.length > 0
+                    ? reactions.map((reaction) => {
+                        return (
+                          <HStack
+                            fontWeight={"500"}
+                            borderRadius={"10px"}
+                            background={"#e3e5e8"}
+                          >
+                            <Text fontSize={"xs"}>{reaction.icon}</Text>
+                            <Text fontSize={"xs"}>{reaction.count}</Text>
+                          </HStack>
+                        );
+                      })
+                    : ""}
+                </HStack>
+              )}
+            </VStack>
 
-          <Popover
-            returnFocusOnClose={false}
-            isOpen={isOpen}
-            onClose={onClose}
-            placement={"top"}
-            closeOnBlur={false}
-          >
-            <PopoverTrigger>
-              <Box size={"md"} position={"absolute"} right={0} top={5}></Box>
-            </PopoverTrigger>
-            <PopoverContent width={"50px"}>
-              <PopoverArrow />
-              <PopoverBody>
-                <BsFillReplyFill onClick={reply} />
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-        </HStack>
+            <Popover
+              returnFocusOnClose={false}
+              isOpen={isOpen}
+              onClose={onClose}
+              placement={"top"}
+              closeOnBlur={false}
+            >
+              <PopoverTrigger>
+                <Box size={"md"} position={"absolute"} right={0} top={5}></Box>
+              </PopoverTrigger>
+              <PopoverContent width={"50px"}>
+                <PopoverArrow />
+                <PopoverBody>
+                  <BsFillReplyFill onClick={reply} />
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+          </HStack>
+        </VStack>
       </VStack>
     </>
   );

@@ -24,6 +24,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 async function loginWithGoogle() {
   try {
@@ -44,13 +45,17 @@ async function loginWithGoogle() {
 //Write message document to firestore
 async function sendMessage(channelId, user, text, referenceMessage) {
   try {
-    await addDoc(collection(db, "chat-channels", channelId, "messages"), {
-      uid: user.uid,
-      displayName: user.displayName,
-      text: text.trim(),
-      timestamp: serverTimestamp(),
-      referenceMessage: referenceMessage,
-    });
+    const docRef = await addDoc(
+      collection(db, "chat-channels", channelId, "messages"),
+      {
+        uid: user.uid,
+        displayName: user.displayName,
+        text: text.trim(),
+        timestamp: serverTimestamp(),
+        referenceMessage: referenceMessage,
+      }
+    );
+    return docRef;
   } catch (error) {
     console.error(error);
   }
@@ -72,4 +77,4 @@ function getMessages(roomId, callback) {
   );
 }
 // Get single message from firestroe
-export { loginWithGoogle, sendMessage, getMessages };
+export { loginWithGoogle, sendMessage, getMessages, storage };
