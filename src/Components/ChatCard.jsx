@@ -5,15 +5,16 @@ import {
   VStack,
   Box,
   useDisclosure,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
+  Tooltip,
   Image,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerHeader,
+  DrawerBody,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { BsFillReplyFill } from "react-icons/bs";
 import { AiOutlineEllipsis } from "react-icons/ai";
 
@@ -25,41 +26,27 @@ const ChatCard = ({
   message,
   reactions,
   reply,
-  referenceMessage,
+  replies,
+  refAction,
+  messageRef,
 }) => {
-  const { isOpen, onToggle, onClose } = useDisclosure();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [showAction, setShowAction] = useState(false);
   return (
     <>
       {" "}
       <VStack
         width={"full"}
         alignItems={"flex-start"}
-        onMouseEnter={onToggle}
-        onMouseLeave={onClose}
+        onMouseEnter={() => setShowAction(true)}
+        onMouseLeave={() => setShowAction(false)}
         _hover={{ background: "#e3e5e8" }}
-        cursor={"pointer"}
-        padding={"10px"}
+        padding={"5px"}
         position={"relative"}
         border={"1px solid #ADD8E6"}
         borderRadius={"md"}
+        ref={messageRef}
       >
-        {referenceMessage ? (
-          <VStack
-            width={"full"}
-            alignItems={"flex-start"}
-            spacing={1}
-            padding={"2"}
-            background={"blackAlpha.200"}
-            borderRadius={"md"}
-            borderLeft={"4px solid #ADD8E6"}
-          >
-            <Text fontSize={"xs"}>{referenceMessage?.displayName}</Text>
-            <Text fontSize={"xs"}>{referenceMessage?.text}</Text>
-          </VStack>
-        ) : (
-          ""
-        )}
         <VStack width={"full"} alignItems={"flex-start"}>
           {messageFile ? (
             <Box>
@@ -68,9 +55,9 @@ const ChatCard = ({
           ) : (
             ""
           )}
-          <HStack width={"full"} alignItems={"center"} gap={"10px"}>
+          <HStack width={"full"} alignItems={"center"} spacing={2}>
             <Avatar src="image_url" size={"md"} />
-            <VStack alignItems={"flex-start"}>
+            <VStack alignItems={"flex-start"} spacing={1}>
               <HStack alignItems={"center"}>
                 <Text fontWeight={"500"} fontSize={"sm"}>
                   {username}
@@ -101,29 +88,96 @@ const ChatCard = ({
                 </HStack>
               )}
             </VStack>
-
-            <Popover
-              returnFocusOnClose={false}
-              isOpen={isOpen}
-              onClose={onClose}
-              placement={"top"}
-              closeOnBlur={false}
-            >
-              <PopoverTrigger>
-                <Box size={"md"} position={"absolute"} right={0} top={5}></Box>
-              </PopoverTrigger>
-              <PopoverContent width={"50px"}>
-                <PopoverArrow />
-                <PopoverBody>
-                  <BsFillReplyFill onClick={reply} />
-                </PopoverBody>
-              </PopoverContent>
-            </Popover>
+            {showAction && (
+              <HStack
+                padding={2}
+                width={"50px"}
+                position={"absolute"}
+                right={0}
+                border={"1px solid gray"}
+                bg={"#fff"}
+                justifyContent={"center"}
+                borderRadius={"md"}
+                top={-5}
+              >
+                <Tooltip label="Reply in thread" fontSize={"xs"}>
+                  <span>
+                    <BsFillReplyFill onClick={reply} cursor={"pointer"} />
+                  </span>
+                </Tooltip>
+              </HStack>
+            )}
           </HStack>
         </VStack>
+        {replies ? (
+          replies.length > 0 ? (
+            <VStack
+              width={"full"}
+              alignItems={"flex-start"}
+              spacing={1}
+              padding={"2"}
+              background={"blackAlpha.200"}
+              borderRadius={"md"}
+              borderLeft={"4px solid #ADD8E6"}
+              cursor={"pointer"}
+              onClick={() => onOpen()}
+            >
+              <Text fontSize={"xs"}>{replies.length} replies</Text>
+            </VStack>
+          ) : (
+            ""
+          )
+        ) : (
+          ""
+        )}
+        <ThreadDrawer
+          isOpen={isOpen}
+          onClose={onClose}
+          displayName={username}
+          replies={replies ? replies : ""}
+        />
       </VStack>
     </>
   );
 };
-
+const ThreadDrawer = (props) => {
+  return (
+    <Drawer
+      isOpen={props.isOpen}
+      placement="right"
+      onClose={props.onClose}
+      size={"md"}
+    >
+      <DrawerOverlay />
+      <DrawerContent>
+        <DrawerCloseButton />
+        <DrawerHeader>Thread</DrawerHeader>
+        <DrawerBody>
+          <VStack width={"full"} gap={"4"}>
+            <ChatCard username={props.displayName} />
+            <HStack width={"full"}>
+              <Text fontSize={"sm"}>
+                {props.replies.length}{" "}
+                {props.replies.length > 1 ? "Replies" : "Reply"}
+              </Text>
+              <hr style={{ width: "80%" }} />
+            </HStack>
+            <VStack width={"full"}>
+              {props.replies.length > 0
+                ? props.replies.map((reply) => {
+                    return (
+                      <ChatCard
+                        username={reply.displayName}
+                        message={reply.text}
+                      />
+                    );
+                  })
+                : ""}
+            </VStack>
+          </VStack>
+        </DrawerBody>
+      </DrawerContent>
+    </Drawer>
+  );
+};
 export default ChatCard;

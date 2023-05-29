@@ -25,8 +25,8 @@ const LeftSideBar = () => {
       <VStack bg={"#e3e5e8"} gap={"50px"} height={"100vh"} p={"10px"}>
         <ChatAvatar />
         <VStack justifyContent={"space-between"} gap={"10px"}>
-          {sideBarImage.map((image) => {
-            return <ChatAvatar image_url={image} showActive={true} />;
+          {sideBarImage.map((image, id) => {
+            return <ChatAvatar key={id} image_url={image} showActive={true} />;
           })}
         </VStack>
       </VStack>

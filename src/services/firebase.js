@@ -9,6 +9,8 @@ import {
   onSnapshot,
   query,
   orderBy,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -43,7 +45,7 @@ async function loginWithGoogle() {
   }
 }
 //Write message document to firestore
-async function sendMessage(channelId, user, text, referenceMessage) {
+async function sendMessage(channelId, user, text) {
   try {
     const docRef = await addDoc(
       collection(db, "chat-channels", channelId, "messages"),
@@ -52,13 +54,19 @@ async function sendMessage(channelId, user, text, referenceMessage) {
         displayName: user.displayName,
         text: text.trim(),
         timestamp: serverTimestamp(),
-        referenceMessage: referenceMessage,
       }
     );
     return docRef;
   } catch (error) {
     console.error(error);
   }
+}
+//Reply message
+function replyMessage(channelId, messageId, replies) {
+  const messageRef = doc(db, "chat-channels", channelId, "messages", messageId);
+  updateDoc(messageRef, {
+    replies: replies,
+  });
 }
 // Read messages documents from firestore
 function getMessages(roomId, callback) {
@@ -77,4 +85,4 @@ function getMessages(roomId, callback) {
   );
 }
 // Get single message from firestroe
-export { loginWithGoogle, sendMessage, getMessages, storage };
+export { loginWithGoogle, sendMessage, getMessages, replyMessage, storage };

@@ -19,21 +19,26 @@ import ChatCard from "./ChatCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useMessages } from "../hooks/useMessages";
-import { storage } from "../services/firebase";
+import { storage, replyMessage } from "../services/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { updateDoc } from "firebase/firestore";
+import { serverTimestamp, updateDoc } from "firebase/firestore";
 
 function ChatContent() {
   const { user } = useAuth();
   const params = useParams();
   const channel = params.channelId;
   const messages = useMessages(channel);
-  const [messageImage, setMessageImage] = useState();
+  const [messageFile, setmessageFile] = useState();
   const [percent, setPercent] = useState(0);
   const [message, setMessage] = useState("");
   const [showRef, setShowRef] = useState(false);
+  const [messageReplies, setMessageReplies] = useState([]);
+  const [replyText, setReplyText] = useState("");
+  const [messageReply, setMessageReply] = useState(null);
+  const [messageId, setMessageId] = useState(null);
   const [referenceMessage, setReferenceMessage] = useState(null);
   const [resferenceDisplay, setReferenceDisplay] = useState(null);
+  const [fileType, setFileType] = useState(null);
   const selectedFileRef = useRef(null);
 
   const lastMessageRef = useRef(null);
@@ -42,32 +47,43 @@ function ChatContent() {
     setMessage(e.target.value);
   };
   const onSendMessage = async () => {
-    if (message.trim() !== "" || messageImage) {
-      const docRef = await sendMessage(
-        channel,
-        user,
-        message,
-        referenceMessage && referenceMessage
-      );
-      console.log(docRef);
-      if (messageImage) {
-        uploadFile(messageImage, docRef);
+    if (message.trim() !== "" || messageFile) {
+      if (showRef) {
+        // alert(messageReplies.length);
+        replyMessage(channel, messageId, [
+          ...messageReplies,
+          {
+            uid: user.uid,
+            displayName: user.displayName,
+            text: message.trim(),
+            timestamp: new Date(),
+          },
+        ]);
+      } else {
+        const docRef = await sendMessage(channel, user, message);
+        console.log(docRef);
+        if (messageFile) {
+          uploadFile(messageFile, docRef);
+        }
       }
     }
-
+    setShowRef(false);
     setMessage("");
-    setMessageImage(null);
+    setmessageFile(null);
     setReferenceMessage(null);
     setReferenceDisplay(null);
+    // setMessageReplies([]);
   };
 
   const onSelectFile = (e) => {
-    setMessageImage(e.target.files[0]);
+    setmessageFile(e.target.files[0]);
+    console.log(e.target.files[0].type.split("/")[0]);
+    setFileType(e.target.files[0].type.split("/")[0]);
   };
-  const uploadFile = async (messageImage, docRef) => {
-    if (messageImage) {
-      const storageRef = ref(storage, `/files/${messageImage.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, messageImage);
+  const uploadFile = async (messageFile, docRef) => {
+    if (messageFile) {
+      const storageRef = ref(storage, `/files/${messageFile.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, messageFile);
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -96,8 +112,9 @@ function ChatContent() {
     setReferenceMessage(null);
     setReferenceDisplay(null);
     setMessage("");
-    setMessageImage(null);
+    setmessageFile(null);
     setPercent(0);
+    setMessageReply([]);
   }, [messages]);
 
   return (
@@ -108,6 +125,7 @@ function ChatContent() {
       width={"full"}
       py={"20px"}
       flex={6}
+      position={"relative"}
     >
       <VStack
         width={"full"}
@@ -120,7 +138,7 @@ function ChatContent() {
           Welcome to the {channel} channel.
         </Text>
         {messages.length > 0 ? (
-          messages.map((message) => {
+          messages.map((messageItem) => {
             const {
               text,
               id,
@@ -128,18 +146,24 @@ function ChatContent() {
               timestamp,
               referenceMessage,
               chatImage,
-            } = message;
+              replies,
+            } = messageItem;
+
             return (
               <ChatCard
                 message={text}
                 referenceMessage={referenceMessage ? referenceMessage : ""}
                 messageFile={chatImage && chatImage}
                 key={id}
+                replies={replies}
                 username={displayName}
                 time={timestamp?.toDate().toLocaleString()}
                 reply={() => {
+                  if (replies) {
+                    setMessageReplies(replies);
+                  }
                   setShowRef(true);
-                  setReferenceMessage(message);
+                  setMessageId(id);
                   setReferenceDisplay(
                     <React.Fragment>
                       <Box width={"full"} padding={"5px"}>
@@ -191,13 +215,16 @@ function ChatContent() {
         ) : (
           ""
         )}
-        {messageImage ? (
+        {messageFile ? (
           <Box padding={"10px"}>
-            <Image
-              width={"200px"}
-              borderRadius={"10px"}
-              src={URL.createObjectURL(messageImage)}
-            />
+            {fileType === "image" && (
+              <Image
+                width={"200px"}
+                borderRadius={"10px"}
+                src={URL.createObjectURL(messageFile)}
+              />
+            )}
+
             <Text fontSize={"xx-small"}>{percent}</Text>
           </Box>
         ) : (
@@ -215,6 +242,7 @@ function ChatContent() {
             ref={selectedFileRef}
             onChange={onSelectFile}
             hidden
+            accept={"image/*,videos/*,.pdf"}
           />
 
           <Textarea
