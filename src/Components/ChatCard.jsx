@@ -14,9 +14,14 @@ import {
   DrawerHeader,
   DrawerBody,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BsFillReplyFill } from "react-icons/bs";
 import { AiOutlineEllipsis } from "react-icons/ai";
+import { replyMessage, storage } from "../services/firebase";
+import { useAuth } from "../hooks/useAuth";
+import { useParams } from "react-router-dom";
+import MessageInput from "./MessageInput";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const ChatCard = ({
   username,
@@ -28,6 +33,7 @@ const ChatCard = ({
   reply,
   replies,
   refAction,
+  messageId,
   messageRef,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -102,7 +108,10 @@ const ChatCard = ({
               >
                 <Tooltip label="Reply in thread" fontSize={"xs"}>
                   <span>
-                    <BsFillReplyFill onClick={reply} cursor={"pointer"} />
+                    <BsFillReplyFill
+                      onClick={() => onOpen()}
+                      cursor={"pointer"}
+                    />
                   </span>
                 </Tooltip>
               </HStack>
@@ -134,13 +143,166 @@ const ChatCard = ({
           isOpen={isOpen}
           onClose={onClose}
           displayName={username}
+          message={message}
           replies={replies ? replies : ""}
+          messageId={messageId}
         />
       </VStack>
     </>
   );
 };
+const ReplyChatCard = ({
+  username,
+  time,
+  messageFile,
+  image_url,
+  message,
+  reactions,
+}) => {
+  return (
+    <VStack
+      width={"full"}
+      alignItems={"flex-start"}
+      border={"1px solid #ADD8E6"}
+      borderRadius={"md"}
+      padding={"1"}
+    >
+      {messageFile ? (
+        <Box>
+          <Image src={messageFile} maxW={"200px"} borderRadius={"10px"} />
+        </Box>
+      ) : (
+        ""
+      )}
+      <HStack width={"full"} alignItems={"center"} spacing={2}>
+        <Avatar src="image_url" size={"sm"} />
+        <VStack alignItems={"flex-start"} spacing={0}>
+          <HStack alignItems={"center"}>
+            <Text fontWeight={"500"} fontSize={"xs"}>
+              {username}
+            </Text>
+            <Text fontSize={"12px"}>
+              {time
+                ? time
+                : `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`}
+            </Text>
+          </HStack>
+          <Text fontSize={"xs"}>{message}</Text>
+          {reactions && (
+            <HStack>
+              {reactions.length > 0
+                ? reactions.map((reaction) => {
+                    return (
+                      <HStack
+                        fontWeight={"500"}
+                        borderRadius={"10px"}
+                        background={"#e3e5e8"}
+                      >
+                        <Text fontSize={"xs"}>{reaction.icon}</Text>
+                        <Text fontSize={"xs"}>{reaction.count}</Text>
+                      </HStack>
+                    );
+                  })
+                : ""}
+            </HStack>
+          )}
+        </VStack>
+        {/* {showAction && (
+          <HStack
+            padding={2}
+            width={"50px"}
+            position={"absolute"}
+            right={0}
+            border={"1px solid gray"}
+            bg={"#fff"}
+            justifyContent={"center"}
+            borderRadius={"md"}
+            top={-5}
+          >
+            <Tooltip label="Reply in thread" fontSize={"xs"}>
+              
+            </Tooltip>
+          </HStack>
+        )} */}
+      </HStack>
+    </VStack>
+  );
+};
 const ThreadDrawer = (props) => {
+  const { user } = useAuth();
+  const params = useParams();
+  const channel = params.channelId;
+  const lastMessageRef = useRef(null);
+  const [message, setMessage] = useState("");
+  const [messageFile, setMessageFile] = useState(null);
+  const [fileType, setFileType] = useState(null);
+  const [replies, setReplies] = useState(props.replies);
+  const writeMessage = (e) => {
+    setMessage(e.target.value);
+  };
+
+  const onSelectFile = (e) => {
+    setMessageFile(e.target.files[0]);
+    console.log(e.target.files[0].type.split("/")[0]);
+    setFileType(e.target.files[0].type.split("/")[0]);
+  };
+
+  // const uploadFile = async (messageFile, docRef) => {
+  //   if (messageFile) {
+  //     const storageRef = ref(storage, `/files/${messageFile.name}`);
+  //     const uploadTask = uploadBytesResumable(storageRef, messageFile);
+  //     uploadTask.on(
+  //       "state_changed",
+  //       (snapshot) => {
+  //         const percent = Math.round(
+  //           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+  //         ); // update progress
+  //         setPercent(percent);
+  //       },
+  //       (err) => console.log(err),
+  //       async () => {
+  //         // download url
+
+  //         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+  //           updateDoc(docRef, {
+  //             chatImage: url,
+  //           });
+  //         });
+  //       }
+  //     );
+  //   }
+  // };
+  const onSendMessage = async () => {
+    if (message.trim() !== "" || messageFile) {
+      const collectionRef = await replyMessage(channel, props.messageId, [
+        ...props.replies,
+        {
+          uid: user.uid,
+          displayName: user.displayName,
+          text: message.trim(),
+          timestamp: new Date(),
+        },
+      ]);
+
+      console.log(collectionRef);
+
+      //   const docRef = await sendMessage(channel, user, message);
+      //   console.log(docRef);
+      // if (messageFile) {
+      //   uploadFile(messageFile, docRef);
+      // }
+      // }
+      setMessage("");
+      setMessageFile(null);
+
+      // setMessageReplies([]);
+    }
+  };
+
+  useEffect(() => {
+    lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [props.replies]);
+
   return (
     <Drawer
       isOpen={props.isOpen}
@@ -154,7 +316,10 @@ const ThreadDrawer = (props) => {
         <DrawerHeader>Thread</DrawerHeader>
         <DrawerBody>
           <VStack width={"full"} gap={"4"}>
-            <ChatCard username={props.displayName} />
+            <ReplyChatCard
+              username={props.displayName}
+              message={props.message}
+            />
             <HStack width={"full"}>
               <Text fontSize={"sm"}>
                 {props.replies.length}{" "}
@@ -166,14 +331,25 @@ const ThreadDrawer = (props) => {
               {props.replies.length > 0
                 ? props.replies.map((reply) => {
                     return (
-                      <ChatCard
+                      <ReplyChatCard
                         username={reply.displayName}
                         message={reply.text}
+                        time={reply.timestamp?.toDate().toLocaleString()}
                       />
                     );
                   })
                 : ""}
             </VStack>
+            <Box ref={lastMessageRef}></Box>
+            <MessageInput
+              message={message}
+              messageFile={messageFile}
+              fileType={fileType}
+              removeFile={() => setMessageFile(null)}
+              writeMessage={writeMessage}
+              onSelectFile={onSelectFile}
+              sendMessage={onSendMessage}
+            />
           </VStack>
         </DrawerBody>
       </DrawerContent>

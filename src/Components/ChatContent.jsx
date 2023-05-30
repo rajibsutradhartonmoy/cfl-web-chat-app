@@ -155,6 +155,7 @@ function ChatContent() {
                 referenceMessage={referenceMessage ? referenceMessage : ""}
                 messageFile={chatImage && chatImage}
                 key={id}
+                messageId={id}
                 replies={replies}
                 username={displayName}
                 time={timestamp?.toDate().toLocaleString()}
@@ -199,24 +200,23 @@ function ChatContent() {
             bg={"gray.100"}
           >
             {resferenceDisplay}
-            <Box
-              position={"absolute"}
-              top={1}
-              right={1}
-              onClick={() => {
-                setReferenceMessage("");
-                setShowRef(false);
-              }}
-              cursor={"pointer"}
-            >
-              <AiFillCloseCircle fontSize={"20px"} />
-            </Box>
           </HStack>
         ) : (
           ""
         )}
         {messageFile ? (
-          <Box padding={"10px"}>
+          <Box padding={"10px"} position={"relative"} width={"full"}>
+            <Box
+              position={"absolute"}
+              top={1}
+              right={1}
+              onClick={() => {
+                setmessageFile(null);
+              }}
+              cursor={"pointer"}
+            >
+              <AiFillCloseCircle fontSize={"20px"} />
+            </Box>
             {fileType === "image" && (
               <Image
                 width={"200px"}
