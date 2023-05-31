@@ -75,6 +75,11 @@ const MessageInput = (props) => {
           _focusVisible={{ outline: "none" }}
           value={props.message}
           onChange={props.writeMessage}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              props.sendMessage();
+            }
+          }}
         />
 
         <HStack

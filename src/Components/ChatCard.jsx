@@ -158,6 +158,7 @@ const ChatCard = ({
           message={message}
           replies={replies ? replies : ""}
           messageId={messageId}
+          displayPicture={displayPicture}
         />
       </VStack>
     </>
@@ -167,7 +168,7 @@ const ReplyChatCard = ({
   username,
   time,
   messageFile,
-  image_url,
+  displayPicture,
   message,
   reactions,
 }) => {
@@ -189,7 +190,7 @@ const ReplyChatCard = ({
         ""
       )}
       <HStack width={"full"} alignItems={"center"} spacing={2}>
-        <Avatar src="image_url" size={"sm"} />
+        <Avatar src={displayPicture} size={"sm"} />
         <VStack alignItems={"flex-start"} spacing={0}>
           <HStack alignItems={"center"}>
             <Text color={"#4F5660"} fontWeight={"500"} fontSize={"xs"}>
@@ -300,6 +301,7 @@ const ThreadDrawer = (props) => {
           displayName: user.displayName,
           text: message.trim(),
           timestamp: new Date(),
+          displayPicture: user.displayPicture,
         },
       ]);
 
@@ -337,6 +339,7 @@ const ThreadDrawer = (props) => {
             <ReplyChatCard
               username={props.displayName}
               message={props.message}
+              displayPicture={props.displayPicture}
             />
             <HStack width={"full"}>
               <Text fontSize={"sm"}>
@@ -354,6 +357,7 @@ const ThreadDrawer = (props) => {
                         messageFile={reply.messageFile}
                         message={reply.text}
                         time={reply.timestamp?.toDate().toLocaleString()}
+                        displayPicture={reply.displayPicture}
                       />
                     );
                   })
