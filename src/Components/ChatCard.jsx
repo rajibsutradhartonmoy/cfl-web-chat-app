@@ -17,11 +17,13 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { BsFillReplyFill } from "react-icons/bs";
 import { AiOutlineEllipsis } from "react-icons/ai";
+import { HiOutlineReply } from "react-icons/hi";
 import { replyMessage, storage } from "../services/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { useParams } from "react-router-dom";
 import MessageInput from "./MessageInput";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { updateDoc } from "firebase/firestore";
 
 const ChatCard = ({
   username,
@@ -46,13 +48,19 @@ const ChatCard = ({
         alignItems={"flex-start"}
         onMouseEnter={() => setShowAction(true)}
         onMouseLeave={() => setShowAction(false)}
-        _hover={{ background: "#e3e5e8" }}
-        padding={"5px"}
+        px={"5px"}
         position={"relative"}
-        border={"1px solid #ADD8E6"}
         borderRadius={"md"}
         ref={messageRef}
       >
+        <Box
+          width={"full"}
+          height={"1px"}
+          mb={"10px"}
+          bg={
+            "linear-gradient(270deg, rgba(88, 101, 242, 0.2) 0%, #5865F2 45.74%, rgba(88, 101, 242, 0.2) 100%)"
+          }
+        ></Box>
         <VStack width={"full"} alignItems={"flex-start"}>
           {messageFile ? (
             <Box>
@@ -120,19 +128,20 @@ const ChatCard = ({
         </VStack>
         {replies ? (
           replies.length > 0 ? (
-            <VStack
-              width={"full"}
-              alignItems={"flex-start"}
+            <HStack
+              alignItems={"flex-end"}
               spacing={1}
               padding={"2"}
-              background={"blackAlpha.200"}
-              borderRadius={"md"}
-              borderLeft={"4px solid #ADD8E6"}
+              color="#5865F2"
               cursor={"pointer"}
               onClick={() => onOpen()}
+              ml={"40px !important"}
             >
-              <Text fontSize={"xs"}>{replies.length} replies</Text>
-            </VStack>
+              <HiOutlineReply fontSize={"24px"} color="#5865F2" />
+              <Text fontSize={"xs"}>
+                {replies.length} {replies.length > 1 ? "Replies" : "Reply"}
+              </Text>
+            </HStack>
           ) : (
             ""
           )
@@ -160,13 +169,15 @@ const ReplyChatCard = ({
   reactions,
 }) => {
   return (
-    <VStack
-      width={"full"}
-      alignItems={"flex-start"}
-      border={"1px solid #ADD8E6"}
-      borderRadius={"md"}
-      padding={"1"}
-    >
+    <VStack width={"full"} alignItems={"flex-start"} padding={"1"}>
+      <Box
+        width={"full"}
+        height={"1px"}
+        mb={"2px"}
+        bg={
+          "linear-gradient(270deg, rgba(88, 101, 242, 0.2) 0%, #5865F2 45.74%, rgba(88, 101, 242, 0.2) 100%)"
+        }
+      ></Box>
       {messageFile ? (
         <Box>
           <Image src={messageFile} maxW={"200px"} borderRadius={"10px"} />
@@ -236,7 +247,8 @@ const ThreadDrawer = (props) => {
   const [message, setMessage] = useState("");
   const [messageFile, setMessageFile] = useState(null);
   const [fileType, setFileType] = useState(null);
-  const [replies, setReplies] = useState(props.replies);
+  const [lastMessage, setLastMessage] = useState(props.replies);
+
   const writeMessage = (e) => {
     setMessage(e.target.value);
   };
@@ -247,34 +259,38 @@ const ThreadDrawer = (props) => {
     setFileType(e.target.files[0].type.split("/")[0]);
   };
 
-  // const uploadFile = async (messageFile, docRef) => {
-  //   if (messageFile) {
-  //     const storageRef = ref(storage, `/files/${messageFile.name}`);
-  //     const uploadTask = uploadBytesResumable(storageRef, messageFile);
-  //     uploadTask.on(
-  //       "state_changed",
-  //       (snapshot) => {
-  //         const percent = Math.round(
-  //           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-  //         ); // update progress
-  //         setPercent(percent);
-  //       },
-  //       (err) => console.log(err),
-  //       async () => {
-  //         // download url
+  const uploadFile = async (messageFile, replyRef) => {
+    if (messageFile) {
+      const storageRef = ref(storage, `/files/${messageFile.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, messageFile);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const percent = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          ); // update progress
+          // setPercent(percent);
+        },
+        (err) => console.log(err),
+        async () => {
+          // download url
 
-  //         getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-  //           updateDoc(docRef, {
-  //             chatImage: url,
-  //           });
-  //         });
-  //       }
-  //     );
-  //   }
-  // };
+          getDownloadURL(uploadTask.snapshot.ref).then((url) => {
+            replyMessage(channel, props.messageId, [
+              ...props.replies,
+              {
+                ...props.replies[replyRef],
+                messageFile: url,
+              },
+            ]);
+          });
+        }
+      );
+    }
+  };
   const onSendMessage = async () => {
     if (message.trim() !== "" || messageFile) {
-      const collectionRef = await replyMessage(channel, props.messageId, [
+      replyMessage(channel, props.messageId, [
         ...props.replies,
         {
           uid: user.uid,
@@ -284,13 +300,12 @@ const ThreadDrawer = (props) => {
         },
       ]);
 
-      console.log(collectionRef);
-
+      const replyID = props.replies.length - 1;
       //   const docRef = await sendMessage(channel, user, message);
       //   console.log(docRef);
-      // if (messageFile) {
-      //   uploadFile(messageFile, docRef);
-      // }
+      if (messageFile) {
+        uploadFile(messageFile, replyID);
+      }
       // }
       setMessage("");
       setMessageFile(null);
@@ -333,6 +348,7 @@ const ThreadDrawer = (props) => {
                     return (
                       <ReplyChatCard
                         username={reply.displayName}
+                        messageFile={reply.messageFile}
                         message={reply.text}
                         time={reply.timestamp?.toDate().toLocaleString()}
                       />

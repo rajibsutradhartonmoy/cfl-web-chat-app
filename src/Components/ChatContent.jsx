@@ -40,7 +40,6 @@ function ChatContent() {
   const [resferenceDisplay, setReferenceDisplay] = useState(null);
   const [fileType, setFileType] = useState(null);
   const selectedFileRef = useRef(null);
-
   const lastMessageRef = useRef(null);
 
   const writeMessage = (e) => {
@@ -132,9 +131,14 @@ function ChatContent() {
         alignItems={"flex-start"}
         height={"800vh"}
         overflowY={"scroll"}
-        gap={"20px"}
+        gap={"10px"}
       >
-        <Text textAlign={"center"} width={"full"}>
+        <Text
+          textAlign={"center"}
+          fontWeight={"bold"}
+          width={"full"}
+          fontSize={"xl"}
+        >
           Welcome to the {channel} channel.
         </Text>
         {messages.length > 0 ? (
@@ -254,6 +258,11 @@ function ChatContent() {
             _focusVisible={{ outline: "none" }}
             value={message}
             onChange={writeMessage}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                sendMessage();
+              }
+            }}
           />
 
           <HStack

@@ -15,7 +15,7 @@ const ChatAvatar = ({ image_url, id, showActive }) => {
 
       <Avatar
         as={motion.div}
-        size={"md"}
+        size={"sm"}
         src={image_url}
         _hover={{ borderRadius: "lg" }}
         transition={"border-radius 0.5s ease"}
