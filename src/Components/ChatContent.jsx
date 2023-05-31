@@ -56,6 +56,7 @@ function ChatContent() {
             displayName: user.displayName,
             text: message.trim(),
             timestamp: new Date(),
+            photoURL: user.photoURL,
           },
         ]);
       } else {
@@ -138,6 +139,7 @@ function ChatContent() {
           fontWeight={"bold"}
           width={"full"}
           fontSize={"xl"}
+          color={"#4F5660"}
         >
           Welcome to the {channel} channel.
         </Text>
@@ -151,6 +153,7 @@ function ChatContent() {
               referenceMessage,
               chatImage,
               replies,
+              photoURL,
             } = messageItem;
 
             return (
@@ -163,6 +166,7 @@ function ChatContent() {
                 replies={replies}
                 username={displayName}
                 time={timestamp?.toDate().toLocaleString()}
+                photoURL={photoURL ? photoURL : ""}
                 reply={() => {
                   if (replies) {
                     setMessageReplies(replies);
@@ -260,7 +264,7 @@ function ChatContent() {
             onChange={writeMessage}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                sendMessage();
+                onSendMessage();
               }
             }}
           />

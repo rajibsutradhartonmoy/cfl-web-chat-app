@@ -32,8 +32,16 @@ const channels = [
     title: "💻 Science & Tech 💻",
     icon: <FaLaptopCode fontSize={"24px"} />,
   },
-  { id: "idea", title: "💡 Ideas 💡", icon: <FaLightbulb fontSize={"24px"} /> },
-  { id: "news", title: "🗞 News 🗞", icon: <FaNewspaper fontSize={"24px"} /> },
+  {
+    id: "idea",
+    title: "💡 Ideas 💡",
+    icon: <FaLightbulb fontSize={"24px"} />,
+  },
+  {
+    id: "news",
+    title: "🗞 News 🗞",
+    icon: <FaNewspaper fontSize={"24px"} />,
+  },
   {
     id: "mentorship",
     title: "🥸 Mentorship 🥸",
@@ -87,9 +95,10 @@ const LeftSideBar = (props) => {
                       gap={"1"}
                       padding={"10px"}
                       cursor={"pointer"}
-                      color={channel === id ? "#fff" : ""}
+                      color={channel === id ? "#fff" : "#4F5660"}
                     >
-                      {icon}
+                      <Box>{icon}</Box>
+
                       <Text fontSize={"14px"}>{title}</Text>
                     </HStack>
                   </Link>

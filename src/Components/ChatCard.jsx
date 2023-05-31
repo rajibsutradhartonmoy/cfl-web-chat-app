@@ -29,7 +29,7 @@ const ChatCard = ({
   username,
   time,
   messageFile,
-  image_url,
+  photoURL,
   message,
   reactions,
   reply,
@@ -70,7 +70,7 @@ const ChatCard = ({
             ""
           )}
           <HStack width={"full"} alignItems={"center"} spacing={2}>
-            <Avatar src="image_url" size={"md"} />
+            <Avatar src={photoURL} size={"md"} />
             <VStack alignItems={"flex-start"} spacing={1}>
               <HStack alignItems={"center"}>
                 <Text fontWeight={"500"} fontSize={"sm"}>
