@@ -196,23 +196,11 @@ function ChatContent() {
         <Box ref={lastMessageRef}></Box>
       </VStack>
       <VStack
-        background={"#e3e5e8"}
+        background={"#f7f7f7"}
         borderRadius={"10px"}
         alignItems={"flex-start"}
         width={"full"}
       >
-        {showRef ? (
-          <HStack
-            position={"relative"}
-            width={"full"}
-            height={"40px"}
-            bg={"gray.100"}
-          >
-            {resferenceDisplay}
-          </HStack>
-        ) : (
-          ""
-        )}
         {messageFile ? (
           <Box padding={"10px"} position={"relative"} width={"full"}>
             <Box
@@ -274,7 +262,7 @@ function ChatContent() {
           <HStack
             cursor={"pointer"}
             padding={"10px"}
-            background={"#4F5660"}
+            background={"#1180fe"}
             borderRadius={"full"}
             onClick={() => onSendMessage()}
           >

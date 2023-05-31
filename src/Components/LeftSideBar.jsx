@@ -1,5 +1,13 @@
 import React from "react";
-import { Avatar, HStack, Img, Text, VStack, Box } from "@chakra-ui/react";
+import {
+  Avatar,
+  HStack,
+  Img,
+  Text,
+  VStack,
+  Box,
+  Image,
+} from "@chakra-ui/react";
 import { AiOutlineDown } from "react-icons/ai";
 import ChatAvatar from "./ChatAvatar";
 import { Link, useParams } from "react-router-dom";
@@ -74,12 +82,12 @@ const LeftSideBar = (props) => {
         padding={"10px"}
       >
         <HStack position={"sticky"} gap={"60px"} alignItems={"center"}>
-          <Img
+          <Image
             textAlign={"center"}
+            width={"150px"}
+            mx={"auto"}
             src="/assets/images/Launch-Logo-Updated.png"
           />
-
-          <AiOutlineDown style={{ fontWeight: "bold" }} fontWeight={"900"} />
         </HStack>
         <VStack width={"full"}>
           {channels.length > 0
@@ -117,13 +125,10 @@ const LeftSideBar = (props) => {
             <Avatar size={"sm"} src={props.displayPicture} />
             <VStack alignItems={"flex-start"} spacing={0}>
               <Text fontSize={"12px"} color={"#4F5660"} fontWeight={"500"}>
-                {props.displayName.slice(0, 9)} ...
+                {props.displayName}
               </Text>
               <Text fontSize={"10px"}> #{props.userId.slice(0, 5)}...</Text>
             </VStack>
-            <BsFillMicMuteFill color="#4F5660" fontSize={"20px"} />
-            <BsHeadphones color="#4F5660" fontSize={"20px"} />
-            <IoMdSettings color="#4F5660" fontSize={"20px"} />
           </HStack>
         </Box>
       </VStack>
