@@ -38,7 +38,7 @@ async function loginWithGoogle() {
     return {
       uid: user.uid,
       displayName: user.displayName,
-      displyPicture: user.photoURL,
+      displayPicture: user.photoURL,
     };
   } catch (error) {
     if (error.code !== "auth/cancelled-popup-request") {
@@ -58,6 +58,7 @@ async function sendMessage(channelId, user, text) {
         displayName: user.displayName,
         text: text.trim(),
         timestamp: serverTimestamp(),
+        displayPicture: user.displayPicture,
       }
     );
     return docRef;

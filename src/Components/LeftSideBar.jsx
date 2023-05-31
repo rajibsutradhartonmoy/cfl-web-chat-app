@@ -114,7 +114,7 @@ const LeftSideBar = (props) => {
             borderRadius={"10px"}
             alignItems={"center"}
           >
-            <Avatar size={"sm"} />
+            <Avatar size={"sm"} src={props.displayPicture} />
             <VStack alignItems={"flex-start"} spacing={0}>
               <Text fontSize={"12px"} color={"#4F5660"} fontWeight={"500"}>
                 {props.displayName.slice(0, 9)} ...

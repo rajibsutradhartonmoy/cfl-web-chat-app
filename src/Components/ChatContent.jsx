@@ -25,6 +25,7 @@ import { serverTimestamp, updateDoc } from "firebase/firestore";
 
 function ChatContent() {
   const { user } = useAuth();
+  console.log(user);
   const params = useParams();
   const channel = params.channelId;
   const messages = useMessages(channel);
@@ -153,7 +154,7 @@ function ChatContent() {
               referenceMessage,
               chatImage,
               replies,
-              photoURL,
+              displayPicture,
             } = messageItem;
 
             return (
@@ -166,7 +167,7 @@ function ChatContent() {
                 replies={replies}
                 username={displayName}
                 time={timestamp?.toDate().toLocaleString()}
-                photoURL={photoURL ? photoURL : ""}
+                displayPicture={displayPicture ? displayPicture : ""}
                 reply={() => {
                   if (replies) {
                     setMessageReplies(replies);

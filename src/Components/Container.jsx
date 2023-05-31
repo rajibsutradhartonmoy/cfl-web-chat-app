@@ -9,7 +9,11 @@ function Container() {
   const { user } = useAuth();
   return (
     <HStack width={"full"}>
-      <LeftSideBar displayName={user.displayName} userId={user.uid} />
+      <LeftSideBar
+        displayName={user.displayName}
+        userId={user.uid}
+        displayPicture={user.displayPicture}
+      />
       <ChatContent />
       <RightSideBar />
     </HStack>
