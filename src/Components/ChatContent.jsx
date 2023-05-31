@@ -243,6 +243,7 @@ function ChatContent() {
           <ImAttachment
             fontSize={"20px"}
             style={{ cursor: "pointer" }}
+            color="#4F5660"
             onClick={() => selectedFileRef.current?.click()}
           />
 
@@ -273,7 +274,7 @@ function ChatContent() {
           <HStack
             cursor={"pointer"}
             padding={"10px"}
-            background={"#000"}
+            background={"#4F5660"}
             borderRadius={"full"}
             onClick={() => onSendMessage()}
           >

@@ -32,9 +32,7 @@ const ChatCard = ({
   displayPicture,
   message,
   reactions,
-  reply,
   replies,
-  refAction,
   messageId,
   messageRef,
 }) => {
@@ -69,7 +67,12 @@ const ChatCard = ({
           ) : (
             ""
           )}
-          <HStack width={"full"} alignItems={"center"} spacing={2}>
+          <HStack
+            width={"full"}
+            alignItems={"center"}
+            spacing={2}
+            color={"#4F5660"}
+          >
             <Avatar src={displayPicture} size={"md"} />
             <VStack alignItems={"flex-start"} spacing={1}>
               <HStack alignItems={"center"}>
@@ -189,7 +192,7 @@ const ReplyChatCard = ({
         <Avatar src="image_url" size={"sm"} />
         <VStack alignItems={"flex-start"} spacing={0}>
           <HStack alignItems={"center"}>
-            <Text fontWeight={"500"} fontSize={"xs"}>
+            <Text color={"#4F5660"} fontWeight={"500"} fontSize={"xs"}>
               {username}
             </Text>
             <Text fontSize={"12px"}>
