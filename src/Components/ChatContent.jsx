@@ -196,7 +196,7 @@ function ChatContent() {
         <Box ref={lastMessageRef}></Box>
       </VStack>
       <VStack
-        background={"#f7f7f7"}
+        background={"#f2f2f2"}
         borderRadius={"10px"}
         alignItems={"flex-start"}
         width={"full"}

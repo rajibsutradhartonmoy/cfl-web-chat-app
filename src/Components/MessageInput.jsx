@@ -15,7 +15,7 @@ const MessageInput = (props) => {
 
   return (
     <VStack
-      background={"#e3e5e8"}
+      background={"#f2f2f2"}
       borderRadius={"10px"}
       alignItems={"flex-start"}
       width={"full"}
@@ -45,7 +45,7 @@ const MessageInput = (props) => {
         ""
       )}
       <HStack
-        background={"#e3e5e8"}
+        background={"#f2f2f2"}
         borderRadius={"10px"}
         width={"full"}
         py={"10px"}
@@ -85,7 +85,7 @@ const MessageInput = (props) => {
         <HStack
           cursor={"pointer"}
           padding={"10px"}
-          background={"#000"}
+          background={"#1180fe"}
           borderRadius={"full"}
           onClick={props.sendMessage}
         >

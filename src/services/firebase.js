@@ -48,6 +48,7 @@ async function loginWithGoogle() {
     return null;
   }
 }
+
 //Write message document to firestore
 async function sendMessage(channelId, user, text) {
   try {

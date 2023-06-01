@@ -1,13 +1,22 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Community from "../Pages/Community";
+import Onboarding from "../Pages/Onboarding";
+import UnuthenticatedApp from "../Components/UnuthenticatedApp";
 
 function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path="/" element={<Community />} />
+        <Route exact path="/" element={<Onboarding />} />
+        <Route exact path="/login" element={<UnuthenticatedApp />} />
+        <Route exact path="/onboarding" element={<Onboarding />} />
         <Route exact path="/:channelId" element={<Community />} />
+        <Route
+          exact
+          path="/api/auth/callback/google"
+          element={<Onboarding />}
+        />
       </Routes>
     </BrowserRouter>
   );
