@@ -1,9 +1,15 @@
 import { HStack, VStack, Box, Image, Button } from "@chakra-ui/react";
 import { useAuth } from "../hooks/useAuth";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const UnuthenticatedApp = () => {
-  const { login } = useAuth();
+  const navigate = useNavigate();
+  const { login, user } = useAuth();
+
+  if (user !== null) {
+    navigate("/onboarding");
+  }
   return (
     <HStack height={"100vh"} overflow={"scroll"}>
       <VStack

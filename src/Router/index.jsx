@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Community from "../Pages/Community";
 import Onboarding from "../Pages/Onboarding";
 import UnuthenticatedApp from "../Components/UnuthenticatedApp";
+import Subscribe from "../Pages/Onboarding/Subscribe";
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
           path="/api/auth/callback/google"
           element={<Onboarding />}
         />
+        <Route exact path="/subscribe" element={<Subscribe />} />
       </Routes>
     </BrowserRouter>
   );

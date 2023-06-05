@@ -7,10 +7,12 @@ import {
   addDoc,
   serverTimestamp,
   onSnapshot,
+  getDocs,
   query,
   orderBy,
   doc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -39,6 +41,7 @@ async function loginWithGoogle() {
       uid: user.uid,
       displayName: user.displayName,
       displayPicture: user.photoURL,
+      email: user.email,
     };
   } catch (error) {
     if (error.code !== "auth/cancelled-popup-request") {
@@ -67,6 +70,36 @@ async function sendMessage(channelId, user, text) {
     console.error(error);
   }
 }
+// Create member document in firestor
+async function createMember(member) {
+  try {
+    const memberDocRef = await addDoc(collection(db, "members"), member);
+    return memberDocRef;
+  } catch (error) {
+    console.log(error);
+  }
+}
+async function createUser(user) {
+  try {
+    const userDocRef = await addDoc(collection(db, "userData"), user);
+    return userDocRef;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function queryUser(param, paramvalue) {
+  const colRef = query(
+    collection(db, "members"),
+    where(param, "==", paramvalue)
+  );
+  try {
+    const docsSnap = await getDocs(colRef);
+    return docsSnap;
+  } catch (error) {
+    console.log(error);
+  }
+}
 //Reply message
 function replyMessage(channelId, messageId, replies) {
   const messageRef = doc(db, "chat-channels", channelId, "messages", messageId);
@@ -74,6 +107,20 @@ function replyMessage(channelId, messageId, replies) {
     replies: replies,
   });
 }
+
+// update user subcsription status
+async function updateUser(param, paramvalue, assign) {
+  const colRef = await queryUser(param, paramvalue);
+  const userRef = doc(db, "members", colRef.docs[0].id);
+
+  const updateRef = await updateDoc(userRef, { subscribed: assign });
+  if (updateRef) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 // Read messages documents from firestore
 function getMessages(roomId, callback) {
   return onSnapshot(
@@ -91,4 +138,14 @@ function getMessages(roomId, callback) {
   );
 }
 // Get single message from firestroe
-export { loginWithGoogle, sendMessage, getMessages, replyMessage, storage };
+export {
+  loginWithGoogle,
+  sendMessage,
+  getMessages,
+  replyMessage,
+  createUser,
+  createMember,
+  queryUser,
+  updateUser,
+  storage,
+};
