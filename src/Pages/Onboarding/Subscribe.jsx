@@ -17,13 +17,38 @@ import { useNavigate } from "react-router-dom";
 import { updateUser, queryUser } from "../../services/firebase";
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-
+let stripePromise;
+const getStripe = () => {
+  if (!stripePromise) {
+    stripePromise = loadStripe(
+      "pk_test_51NFb4aKxqE4k52I9dcZuEbDooRxb4Xbm5vKbkkAyZNNSYmKYBAdcmjNR6QSk2V9a4q9wZS1EUVh7TTnG1cEdgcWp00SyXrMrqV"
+    );
+    return stripePromise;
+  }
+};
 const Subscribe = () => {
   const navigate = useNavigate();
 
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const item = {
+    price: "price_1NFbDjKxqE4k52I9tC0Esapp",
+    quantity: 1,
+  };
+  const checkoutOptions = {
+    lineItems: [item],
+    mode: "subscription",
+    successUrl: `${window.location.origin}/success`,
+    cancelUrl: `${window.location.origin}/cancel`,
+  };
+
+  const redirectToCheckout = async () => {
+    console.log("redirect to checkout");
+    const stripe = await getStripe();
+    const { error } = await stripe.redirectToCheckout(checkoutOptions);
+    console.log(`The error is ${error}`);
+  };
   const onSubscribe = async () => {
     setIsSubmitting(true);
     const status = await updateUser("uid", user.uid, true);
@@ -67,9 +92,10 @@ const Subscribe = () => {
           </Text>
           <Button
             isLoading={isSubmitting}
-            onClick={() => {
-              onSubscribe();
-            }}
+            // onClick={() => {
+            //   onSubscribe();
+            // }}
+            onClick={redirectToCheckout}
           >
             Get Free Premium
           </Button>

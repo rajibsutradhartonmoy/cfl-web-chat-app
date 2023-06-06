@@ -7,6 +7,7 @@ const UnuthenticatedApp = () => {
   const navigate = useNavigate();
   const { login, user } = useAuth();
 
+  console.log(user);
   if (user !== null) {
     navigate("/onboarding");
   }
