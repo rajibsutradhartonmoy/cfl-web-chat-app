@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { createMember, createUser, queryUser } from "../../services/firebase";
 const Onboarding = () => {
   const navigate = useNavigate();
+
   const user = useAuth();
   console.log(user);
   const {
@@ -66,6 +67,7 @@ const Onboarding = () => {
   };
 
   useEffect(() => {
+    console.log(user);
     if (user.user !== null) {
       setFullName(user.user.displayName);
       setEmail(user.user.email);

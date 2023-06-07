@@ -16,7 +16,6 @@ const AuthProvider = (props) => {
     } else {
       // User is signed out
       // ...
-      login();
     }
   });
   const login = async () => {

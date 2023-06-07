@@ -62,7 +62,7 @@ async function sendMessage(channelId, user, text) {
         displayName: user.displayName,
         text: text.trim(),
         timestamp: serverTimestamp(),
-        displayPicture: user.displayPicture,
+        displayPicture: user.photoURL,
       }
     );
     return docRef;

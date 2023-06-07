@@ -1,3 +1,4 @@
+import "./chatlink.css";
 import {
   Avatar,
   HStack,
@@ -24,6 +25,7 @@ import { useParams } from "react-router-dom";
 import MessageInput from "./MessageInput";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { updateDoc } from "firebase/firestore";
+import { LinkItUrl } from "react-linkify-it";
 
 const ChatCard = ({
   username,
@@ -85,7 +87,10 @@ const ChatCard = ({
                     : `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`}
                 </Text>
               </HStack>
-              <Text fontSize={"14px"}>{message}</Text>
+              <LinkItUrl className="purple">
+                <Text fontSize={"14px"}>{message}</Text>
+              </LinkItUrl>
+
               {reactions && (
                 <HStack>
                   {reactions.length > 0
@@ -202,7 +207,9 @@ const ReplyChatCard = ({
                 : `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`}
             </Text>
           </HStack>
-          <Text fontSize={"xs"}>{message}</Text>
+          <LinkItUrl className="purple">
+            <Text fontSize={"xs"}>{message}</Text>
+          </LinkItUrl>
           {reactions && (
             <HStack>
               {reactions.length > 0
@@ -301,7 +308,7 @@ const ThreadDrawer = (props) => {
           displayName: user.displayName,
           text: message.trim(),
           timestamp: new Date(),
-          displayPicture: user.displayPicture,
+          displayPicture: user.photoURL,
         },
       ]);
 
