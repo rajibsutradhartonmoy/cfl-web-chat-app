@@ -18,7 +18,7 @@ const Community = () => {
       navigate("/onboarding");
     }
     if (!params.channelId) {
-      navigate("/general");
+      navigate("/channles/general");
     }
   }, []);
   return <>{user !== null ? <Container /> : <Onboarding />}</>;

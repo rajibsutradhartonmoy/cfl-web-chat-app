@@ -12,7 +12,7 @@ function Router() {
         <Route exact path="/" element={<Onboarding />} />
         <Route exact path="/login" element={<UnuthenticatedApp />} />
         <Route exact path="/onboarding" element={<Onboarding />} />
-        <Route exact path="/:channelId" element={<Community />} />
+        <Route exact path="/channels/:channelId" element={<Community />} />
         <Route
           exact
           path="/api/auth/callback/google"

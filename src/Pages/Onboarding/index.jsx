@@ -10,6 +10,7 @@ import {
   Textarea,
   useToast,
   Container,
+  Spinner,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
@@ -17,11 +18,12 @@ import { Form, useForm } from "react-hook-form";
 import UnuthenticatedApp from "../../Components/UnuthenticatedApp";
 import { useNavigate } from "react-router-dom";
 import { createMember, createUser, queryUser } from "../../services/firebase";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
+
 const Onboarding = () => {
+  const auth = getAuth();
   const navigate = useNavigate();
 
-  const user = useAuth();
-  console.log(user);
   const {
     register,
     handleSubmit,
@@ -31,8 +33,11 @@ const Onboarding = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [uid, setUid] = useState("");
-
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [userLoading, setUserLoading] = useState(true);
+  const [authState, setAuthState] = useState(null);
+
+  const [page, setPage] = useState("");
   const onSubmit = async (data) => {
     if (data.full_name === "") {
       data.full_name = fullName;
@@ -66,123 +71,177 @@ const Onboarding = () => {
     setIsSubmitting(false);
   };
 
+  // useEffect(() => {
+  //   if (user.user !== null) {
+  //     console.log("useEffect user", user);
+  //     setFullName(user.user.displayName);
+  //     setEmail(user.user.email);
+  //     setUid(user.user.uid);
+  //     const getUserStatus = async () => {
+  //       const users = await queryUser("uid", user.user.uid);
+  //       console.log("does user exist?", users.docs);
+  //       if (users.docs.length > 0) {
+  //         if (users.docs[0].data().subscribed === true) {
+  //           setPage("chat");
+  //           navigate("/channels/general");
+  //         } else if (users.docs[0].data().subscribed === false) {
+  //           setPage("subscribe");
+  //           // navigate("/subscribe");
+  //         }
+  //       } else {
+  //         setUserLoading(false);
+  //         setPage("onbarding");
+  //       }
+  //     };
+  //     getUserStatus();
+  //   } else {
+  //     setPage("login");
+  //     console.log("page is login");
+  //     navigate("/login");
+  //   }
+  // }, [user, navigate, page]);
   useEffect(() => {
-    console.log(user);
-    if (user.user !== null) {
-      setFullName(user.user.displayName);
-      setEmail(user.user.email);
-      setUid(user.user.uid);
-      const getUserStatus = async () => {
-        const users = await queryUser("uid", user.user.uid);
-        if (users.docs.length > 0) {
-          if (users.docs[0].data().subscribed === true) {
-            navigate("/general");
-          } else if (users.docs[0].data().subscribed === false) {
-            navigate("/subscribe");
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUserLoading(true);
+      if (user) {
+        const getUserStatus = async () => {
+          const users = await queryUser("uid", user.uid);
+          console.log("does user exist?", users.docs);
+          if (users.docs.length > 0) {
+            if (users.docs[0].data().subscribed === true) {
+              setPage("chat");
+              navigate("/channels/general");
+            } else if (users.docs[0].data().subscribed === false) {
+              setPage("subscribe");
+              navigate("/subscribe");
+            }
+          } else {
+            setUserLoading(false);
+            setPage("onbarding");
           }
-        }
-      };
-      getUserStatus();
-    } else {
-      navigate("/login");
-    }
-  }, [user]);
-
+        };
+        getUserStatus();
+        console.log(user);
+        setAuthState(true);
+        setUserLoading(false);
+        setFullName(user.displayName);
+        setEmail(user.email);
+        setUid(user.uid);
+        setPage("onboarding");
+      } else {
+        setAuthState(false);
+        setUserLoading(false);
+        navigate("/login");
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
   return (
     <>
-      <HStack height={"100vh"} overflow={"scroll"}>
-        <VStack
-          flex={1.5}
-          height={"100vh"}
-          justifyContent={"center"}
-          width={"full"}
-          alignItems={"center"}
-          gap={5}
-          position={"relative"}
-          bgImage={"/assets/images/transparentwaves.jpg"}
-        >
-          <Image width={"200px"} src="/assets/images/Launch-Logo-Updated.png" />
-          <Text fontSize>
-            A few steps away from connecting with thousands of CoFounders
-          </Text>
-
-          <form
-            style={{ width: "80%", color: "#4F5660" }}
-            onSubmit={handleSubmit(onSubmit)}
+      {userLoading ? (
+        <Spinner />
+      ) : authState ? (
+        <HStack height={"100vh"} overflow={"scroll"}>
+          <VStack
+            flex={1.5}
+            height={"100vh"}
+            justifyContent={"center"}
+            width={"full"}
+            alignItems={"center"}
+            gap={5}
+            position={"relative"}
+            bgImage={"/assets/images/transparentwaves.jpg"}
           >
-            <VStack width={"full"} alignItems={"flex-start"} spacing={5}>
-              <Text textTransform={"capitalize"} color={"#0461b8"}>
-                Personal Information
-              </Text>
-              <Text fontSize={"sm"}>Tell us few details about yourself</Text>
-            </VStack>
-            <VStack mt={5} width={"full"} spacing={5}>
-              <FormControl>
-                <FormLabel fontSize={"sm"}>Full Name</FormLabel>
-                <Input
-                  type="text"
-                  defaultValue={fullName}
-                  name="full_name"
-                  required
-                  {...register("full_name")}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel fontSize={"sm"}>Name of Company</FormLabel>
-                <Input
-                  type="text"
-                  name="company_name"
-                  required
-                  {...register("company_name")}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel fontSize={"sm"}>
-                  A brief description of what you are building
-                </FormLabel>
-                <Textarea
-                  type="text"
-                  name="company_description"
-                  required
-                  {...register("company_description")}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel fontSize={"sm"}>Biggest Pain point</FormLabel>
-                <Input
-                  type="text"
-                  name="pain_point"
-                  required
-                  {...register("pain_point")}
-                />
-              </FormControl>
-              <Button
-                type="submit"
-                bg={"#0461b8"}
-                color={"#fff"}
-                _hover={{ bg: "#0c8ce9" }}
-                size={"lg"}
-                width={"full"}
-                // onClick={() => navigate("/general")}
-                isLoading={isSubmitting}
-              >
-                {" "}
-                Proceed
-              </Button>
-            </VStack>
-          </form>
-        </VStack>
+            <Image
+              width={"200px"}
+              src="/assets/images/Launch-Logo-Updated.png"
+            />
+            <Text fontSize>
+              A few steps away from connecting with thousands of CoFounders
+            </Text>
 
-        <VStack
-          flex={2}
-          height={"100vh"}
-          backgroundImage={
-            "url(https://cofounderslab.com/assets/images/auth-splash.jpg)"
-          }
-          bgSize={"cover"}
-          bgPosition={"center"}
-        ></VStack>
-      </HStack>
+            <form
+              style={{ width: "80%", color: "#4F5660" }}
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <VStack width={"full"} alignItems={"flex-start"} spacing={5}>
+                <Text textTransform={"capitalize"} color={"#0461b8"}>
+                  Personal Information
+                </Text>
+                <Text fontSize={"sm"}>Tell us few details about yourself</Text>
+              </VStack>
+              <VStack mt={5} width={"full"} spacing={5}>
+                <FormControl>
+                  <FormLabel fontSize={"sm"}>Full Name</FormLabel>
+                  <Input
+                    type="text"
+                    defaultValue={fullName}
+                    name="full_name"
+                    required
+                    {...register("full_name")}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel fontSize={"sm"}>Name of Company</FormLabel>
+                  <Input
+                    type="text"
+                    name="company_name"
+                    required
+                    {...register("company_name")}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel fontSize={"sm"}>
+                    A brief description of what you are building
+                  </FormLabel>
+                  <Textarea
+                    type="text"
+                    name="company_description"
+                    required
+                    {...register("company_description")}
+                  />
+                </FormControl>
+                <FormControl>
+                  <FormLabel fontSize={"sm"}>Biggest Pain point</FormLabel>
+                  <Input
+                    type="text"
+                    name="pain_point"
+                    required
+                    {...register("pain_point")}
+                  />
+                </FormControl>
+                <Button
+                  type="submit"
+                  bg={"#0461b8"}
+                  color={"#fff"}
+                  _hover={{ bg: "#0c8ce9" }}
+                  size={"lg"}
+                  width={"full"}
+                  // onClick={() => navigate("/general")}
+                  isLoading={isSubmitting}
+                >
+                  {" "}
+                  Proceed
+                </Button>
+              </VStack>
+            </form>
+          </VStack>
+
+          <VStack
+            flex={2}
+            height={"100vh"}
+            backgroundImage={
+              "url(https://cofounderslab.com/assets/images/auth-splash.jpg)"
+            }
+            bgSize={"cover"}
+            bgPosition={"center"}
+          ></VStack>
+        </HStack>
+      ) : (
+        "idan"
+      )}
     </>
   );
 };
