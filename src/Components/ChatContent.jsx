@@ -133,6 +133,8 @@ function ChatContent() {
       <HStack
         position={"sticky"}
         display={["flex", "flex", "none"]}
+        bg={"#fff"}
+        zIndex={"99"}
         top={0}
         width={"full"}
         pl={"20px"}
