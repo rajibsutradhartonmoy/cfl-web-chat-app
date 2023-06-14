@@ -1,4 +1,4 @@
-import { Avatar, HStack, Text, VStack } from "@chakra-ui/react";
+import { Avatar, Box, HStack, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import LeftSideBar from "./LeftSideBar";
 import ChatContent from "./ChatContent";
@@ -9,11 +9,14 @@ function Container() {
   const { user } = useAuth();
   return (
     <HStack width={"full"}>
-      <LeftSideBar
-        displayName={user.displayName}
-        userId={user.uid}
-        displayPicture={user.displayPicture}
-      />
+      <Box display={["none", "none", "block"]}>
+        <LeftSideBar
+          displayName={user.displayName}
+          userId={user.uid}
+          displayPicture={user.displayPicture}
+        />
+      </Box>
+
       <ChatContent />
       <RightSideBar />
     </HStack>

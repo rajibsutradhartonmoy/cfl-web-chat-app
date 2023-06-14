@@ -9,6 +9,7 @@ const RightSideBar = () => {
       height={"100vh"}
       overflowY={"scroll"}
       padding={"10px"}
+      display={["none", "none", "flex"]}
     >
       <HStack position={"sticky"} gap={"60px"} alignItems={"center"}>
         <Text fontSize={"md"} fontWeight={"500"}>

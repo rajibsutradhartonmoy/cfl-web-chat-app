@@ -22,8 +22,10 @@ import { useMessages } from "../hooks/useMessages";
 import { storage, replyMessage } from "../services/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { serverTimestamp, updateDoc } from "firebase/firestore";
+import { BsArrowLeft, BsBack } from "react-icons/bs";
 
 function ChatContent() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   console.log(user);
   const params = useParams();
@@ -128,6 +130,22 @@ function ChatContent() {
       flex={6}
       position={"relative"}
     >
+      <HStack
+        position={"sticky"}
+        display={["flex", "flex", "none"]}
+        top={0}
+        width={"full"}
+        pl={"20px"}
+        alignItems={"center"}
+        gap={"100px"}
+        boxShadow={"rgba(169, 170, 176, 0.47) 1px 3px 5px -1px"}
+        pb={"10px"}
+      >
+        <BsArrowLeft fontSize={"30px"} onClick={() => navigate("/channels")} />
+        <Text textTransform={"capitalize"} fontWeight={"500"} color={"#4F5660"}>
+          {channel}
+        </Text>
+      </HStack>
       <VStack
         width={"full"}
         alignItems={"flex-start"}

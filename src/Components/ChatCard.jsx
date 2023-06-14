@@ -357,9 +357,10 @@ const ThreadDrawer = (props) => {
             </HStack>
             <VStack width={"full"}>
               {props.replies.length > 0
-                ? props.replies.map((reply) => {
+                ? props.replies.map((reply, id) => {
                     return (
                       <ReplyChatCard
+                        key={id}
                         username={reply.displayName}
                         messageFile={reply.messageFile}
                         message={reply.text}

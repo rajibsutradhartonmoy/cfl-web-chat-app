@@ -80,6 +80,7 @@ const LeftSideBar = (props) => {
         overflowY={"scroll"}
         position={"relative"}
         padding={"10px"}
+        width={["full", "full", "auto"]}
       >
         <HStack position={"sticky"} gap={"60px"} alignItems={"center"}>
           <Image
@@ -93,7 +94,11 @@ const LeftSideBar = (props) => {
           {channels.length > 0
             ? channels.map(({ id, title, icon }) => {
                 return (
-                  <Link style={{ width: "100%" }} key={id} to={`/${id}`}>
+                  <Link
+                    style={{ width: "100%" }}
+                    key={id}
+                    to={`/channels/${id}`}
+                  >
                     <HStack
                       justifyContent={"flex-start"}
                       borderRadius={"5px"}
