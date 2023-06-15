@@ -289,7 +289,7 @@ function ChatContent() {
             ref={selectedFileRef}
             onChange={onSelectFile}
             hidden
-            accept={"image/*,videos/*,.pdf"}
+            accept={"image/*,video/mp4,video/x-m4v,video/*,.pdf"}
           />
 
           <Textarea

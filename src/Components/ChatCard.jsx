@@ -95,6 +95,10 @@ const ChatCard = ({
                     </Text>
                   </Link>
                 </VStack>
+              ) : fileType === "mp4" ? (
+                <video controls width="250" style={{ borderRadius: "10px" }}>
+                  <source src={messageFile} type="video/mp4"></source>
+                </video>
               ) : (
                 ""
               )}
