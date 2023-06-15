@@ -146,7 +146,8 @@ const Onboarding = () => {
         <HStack height={"100vh"} overflow={"scroll"}>
           <VStack
             flex={1.5}
-            height={"100vh"}
+            height={["auto", "auto", "100vh"]}
+            overflow={"scroll"}
             justifyContent={"center"}
             width={"full"}
             alignItems={"center"}
@@ -158,7 +159,7 @@ const Onboarding = () => {
               width={"200px"}
               src="/assets/images/Launch-Logo-Updated.png"
             />
-            <Text fontSize>
+            <Text textAlign={"center"}>
               A few steps away from connecting with thousands of CoFounders
             </Text>
 
@@ -230,6 +231,7 @@ const Onboarding = () => {
           </VStack>
 
           <VStack
+            display={["none", "none", "flex"]}
             flex={2}
             height={"100vh"}
             backgroundImage={

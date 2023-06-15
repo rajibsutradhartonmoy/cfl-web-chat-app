@@ -13,6 +13,7 @@ import {
   doc,
   updateDoc,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 
 // Your web app's Firebase configuration
@@ -107,7 +108,12 @@ function replyMessage(channelId, messageId, replies) {
     replies: replies,
   });
 }
-
+//delete message
+function deleteMessage(channelId, messageId) {
+  const messageRef = doc(db, "chat-channels", channelId, "messages", messageId);
+  console.log(messageRef);
+  deleteDoc(messageRef);
+}
 // update user subcsription status
 async function updateUser(param, paramvalue, assign) {
   const colRef = await queryUser(param, paramvalue);
@@ -147,5 +153,6 @@ export {
   createMember,
   queryUser,
   updateUser,
+  deleteMessage,
   storage,
 };

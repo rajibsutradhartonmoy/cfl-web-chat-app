@@ -7,6 +7,7 @@ import {
   Input,
   Image,
 } from "@chakra-ui/react";
+import { Document, Page } from "react-pdf";
 import { sendMessage } from "../services/firebase";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -20,7 +21,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useMessages } from "../hooks/useMessages";
 import { storage, replyMessage } from "../services/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  getMetadata,
+} from "firebase/storage";
 import { serverTimestamp, updateDoc } from "firebase/firestore";
 import { BsArrowLeft, BsBack } from "react-icons/bs";
 
@@ -44,6 +50,12 @@ function ChatContent() {
   const [fileType, setFileType] = useState(null);
   const selectedFileRef = useRef(null);
   const lastMessageRef = useRef(null);
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+  }
 
   const writeMessage = (e) => {
     setMessage(e.target.value);
@@ -79,9 +91,9 @@ function ChatContent() {
   };
 
   const onSelectFile = (e) => {
+    console.log(e.target.files[0]);
     setmessageFile(e.target.files[0]);
-    console.log(e.target.files[0].type.split("/")[0]);
-    setFileType(e.target.files[0].type.split("/")[0]);
+    setFileType(e.target.files[0].type.split("/")[1]);
   };
   const uploadFile = async (messageFile, docRef) => {
     if (messageFile) {
@@ -175,15 +187,25 @@ function ChatContent() {
               chatImage,
               replies,
               displayPicture,
+              uid,
             } = messageItem;
-
+            if (chatImage) {
+              console.log(chatImage);
+              messageItem.type = chatImage
+                .split("?")[0]
+                .split("%")[1]
+                .split(".")[1];
+            }
             return (
               <ChatCard
                 message={text}
                 referenceMessage={referenceMessage ? referenceMessage : ""}
                 messageFile={chatImage && chatImage}
+                fileType={messageItem.type ? messageItem.type : ""}
                 key={id}
                 messageId={id}
+                viewerId={user.uid}
+                uid={uid}
                 replies={replies}
                 username={displayName}
                 time={timestamp?.toDate().toLocaleString()}
@@ -234,15 +256,22 @@ function ChatContent() {
             >
               <AiFillCloseCircle fontSize={"20px"} />
             </Box>
-            {fileType === "image" && (
+            {fileType === "gif" ||
+            fileType === "jpg" ||
+            fileType === "png" ||
+            fileType === "jpeg" ||
+            fileType === "webp" ||
+            fileType === "svg+xml" ? (
               <Image
                 width={"200px"}
                 borderRadius={"10px"}
                 src={URL.createObjectURL(messageFile)}
               />
+            ) : (
+              <Box>
+                <Text color={"blue.300"}>{messageFile.name}</Text>
+              </Box>
             )}
-
-            <Text fontSize={"xx-small"}>{percent}</Text>
           </Box>
         ) : (
           ""

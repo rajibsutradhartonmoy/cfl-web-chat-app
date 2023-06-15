@@ -67,7 +67,11 @@ const MessageInput = (props) => {
         />
 
         <Textarea
-          placeholder="Send message to this channel"
+          placeholder={
+            props.placeholder
+              ? props.placeholder
+              : "Send message to this channel"
+          }
           minH={"30px"}
           resize={"none"}
           border={"none"}

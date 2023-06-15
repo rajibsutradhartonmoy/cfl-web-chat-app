@@ -87,7 +87,7 @@ const Subscribe = () => {
         >
           <Image width={"200px"} src="/assets/images/Launch-Logo-Updated.png" />
           <Text fontWeight={"bold"}>Ugrade To Free Premium</Text>
-          <Text fontSize={"xl"}>
+          <Text fontSize={"xl"} textAlign={"center"}>
             Join our community to connect with other Cofounders
           </Text>
           <Button
@@ -102,6 +102,7 @@ const Subscribe = () => {
         </VStack>
 
         <VStack
+          display={["none", "none", "flex"]}
           flex={2}
           height={"100vh"}
           backgroundImage={

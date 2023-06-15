@@ -14,23 +14,26 @@ import {
   DrawerCloseButton,
   DrawerHeader,
   DrawerBody,
+  Link,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { BsFillReplyFill } from "react-icons/bs";
-import { AiOutlineEllipsis } from "react-icons/ai";
+import { AiFillDelete, AiOutlineEllipsis } from "react-icons/ai";
 import { HiOutlineReply } from "react-icons/hi";
-import { replyMessage, storage } from "../services/firebase";
+import { replyMessage, storage, deleteMessage } from "../services/firebase";
 import { useAuth } from "../hooks/useAuth";
 import { useParams } from "react-router-dom";
 import MessageInput from "./MessageInput";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { updateDoc } from "firebase/firestore";
 import { LinkItUrl } from "react-linkify-it";
-
 const ChatCard = ({
   username,
+  viewerId,
+  uid,
   time,
   messageFile,
+  fileType,
   displayPicture,
   message,
   reactions,
@@ -40,6 +43,9 @@ const ChatCard = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showAction, setShowAction] = useState(false);
+  const params = useParams();
+  const channel = params.channelId;
+
   return (
     <>
       {" "}
@@ -64,7 +70,34 @@ const ChatCard = ({
         <VStack width={"full"} alignItems={"flex-start"}>
           {messageFile ? (
             <Box>
-              <Image src={messageFile} maxW={"200px"} borderRadius={"10px"} />
+              {fileType === "gif" ||
+              fileType === "jpg" ||
+              fileType === "png" ||
+              fileType === "jpeg" ||
+              fileType === "webp" ||
+              fileType === "svg+xml" ? (
+                <Image src={messageFile} maxW={"200px"} borderRadius={"10px"} />
+              ) : fileType === "pdf" ? (
+                <VStack
+                  height={"100px"}
+                  padding={"10px"}
+                  borderRadius={"10px"}
+                  justifyContent={"center"}
+                >
+                  <Link href={messageFile} color={"blue.300"}>
+                    <Image
+                      src={"/assets/images/pdf.png"}
+                      width={"50px"}
+                      borderRadius={"10px"}
+                    />
+                    <Text fontSize={"xs"}>
+                      {messageFile.split("%")[1].split("?")[0]}
+                    </Text>
+                  </Link>
+                </VStack>
+              ) : (
+                ""
+              )}
             </Box>
           ) : (
             ""
@@ -130,6 +163,25 @@ const ChatCard = ({
                     />
                   </span>
                 </Tooltip>
+                {viewerId === uid ? (
+                  <Tooltip label="Delete message" fontSize={"xs"}>
+                    <span>
+                      <AiFillDelete
+                        color="red"
+                        cursor={"pointer"}
+                        onClick={() => {
+                          if (viewerId === uid) {
+                            deleteMessage(channel, messageId);
+                          } else {
+                            alert("you cannot delete another user's message");
+                          }
+                        }}
+                      />
+                    </span>
+                  </Tooltip>
+                ) : (
+                  ""
+                )}
               </HStack>
             )}
           </HStack>
@@ -380,6 +432,7 @@ const ThreadDrawer = (props) => {
               writeMessage={writeMessage}
               onSelectFile={onSelectFile}
               sendMessage={onSendMessage}
+              placeholder={"Reply to this thread"}
             />
           </VStack>
         </DrawerBody>
