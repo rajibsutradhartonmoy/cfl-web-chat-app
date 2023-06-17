@@ -33,7 +33,6 @@ import { BsArrowLeft, BsBack } from "react-icons/bs";
 function ChatContent() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  console.log(user);
   const params = useParams();
   const channel = params.channelId;
   const messages = useMessages(channel);
@@ -76,7 +75,6 @@ function ChatContent() {
         ]);
       } else {
         const docRef = await sendMessage(channel, user, message);
-        console.log(docRef);
         if (messageFile) {
           uploadFile(messageFile, docRef);
         }
@@ -91,7 +89,6 @@ function ChatContent() {
   };
 
   const onSelectFile = (e) => {
-    console.log(e.target.files[0]);
     setmessageFile(e.target.files[0]);
     setFileType(e.target.files[0].type.split("/")[1]);
   };
@@ -190,7 +187,6 @@ function ChatContent() {
               uid,
             } = messageItem;
             if (chatImage) {
-              console.log(chatImage);
               messageItem.type = chatImage
                 .split("?")[0]
                 .split("%")[1]

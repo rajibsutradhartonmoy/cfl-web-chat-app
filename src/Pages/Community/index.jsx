@@ -9,7 +9,6 @@ import Onboarding from "../Onboarding";
 
 const Community = () => {
   const { user } = useAuth();
-  console.log(user);
   const navigate = useNavigate();
 
   const params = useParams();

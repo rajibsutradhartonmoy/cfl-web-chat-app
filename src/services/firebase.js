@@ -111,7 +111,6 @@ function replyMessage(channelId, messageId, replies) {
 //delete message
 function deleteMessage(channelId, messageId) {
   const messageRef = doc(db, "chat-channels", channelId, "messages", messageId);
-  console.log(messageRef);
   deleteDoc(messageRef);
 }
 // update user subcsription status

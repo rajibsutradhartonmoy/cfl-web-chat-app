@@ -322,7 +322,6 @@ const ThreadDrawer = (props) => {
 
   const onSelectFile = (e) => {
     setMessageFile(e.target.files[0]);
-    console.log(e.target.files[0].type.split("/")[0]);
     setFileType(e.target.files[0].type.split("/")[0]);
   };
 

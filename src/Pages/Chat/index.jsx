@@ -14,7 +14,6 @@ function Chat() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserLoading(false);
-        console.log(user);
         setUser(user);
       } else {
         navigate("/login");

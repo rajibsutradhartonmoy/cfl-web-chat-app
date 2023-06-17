@@ -45,17 +45,14 @@ const Onboarding = () => {
     data.email = email;
     data.uid = uid;
     data.subscribed = false;
-    console.log(data);
     setIsSubmitting(true);
 
     let array = [];
     const query = await queryUser("email", email);
 
-    console.log(query);
     query.forEach((doc) => {
       array.push(doc.data());
     });
-    console.log(array[0]);
     const registered = array.filter((user) => {
       return user.email === data.email;
     });
@@ -106,7 +103,6 @@ const Onboarding = () => {
       if (user) {
         const getUserStatus = async () => {
           const users = await queryUser("uid", user.uid);
-          console.log("does user exist?", users.docs);
           if (users.docs.length > 0) {
             if (users.docs[0].data().subscribed === true) {
               setPage("chat");
@@ -121,7 +117,6 @@ const Onboarding = () => {
           }
         };
         getUserStatus();
-        console.log(user);
         setAuthState(true);
         setUserLoading(false);
         setFullName(user.displayName);
