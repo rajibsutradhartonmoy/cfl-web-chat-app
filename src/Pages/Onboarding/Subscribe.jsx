@@ -10,11 +10,13 @@ import {
   Container,
   Text,
   VStack,
+  Spinner,
   HStack,
   Image,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { updateUser, queryUser } from "../../services/firebase";
+import { createCheckoutSession } from "../../services/createCheckoutSession";
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
 let stripePromise;
@@ -31,6 +33,7 @@ const Subscribe = () => {
 
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const item = {
     price: "price_1NFbDjKxqE4k52I9tC0Esapp",
@@ -60,17 +63,22 @@ const Subscribe = () => {
     }
   };
   useEffect(() => {
-    if (user === null) {
-      navigate("/onboarding");
+    setLoading(true);
+    if (user) {
+      setLoading(false);
+      console.log(user);
     }
-    const getUserStatus = async () => {
-      const users = await queryUser("uid", user.uid);
-      if (users.docs.length > 0) {
-        // alert(users.docs[0].id);
-      }
-    };
-    getUserStatus();
-  });
+    // if (user === null) {
+    //   navigate("/onboarding");
+    // }
+    // const getUserStatus = async () => {
+    //   const userData = await queryUser(user.uid);
+    //   if (!user) {
+    //     // alert(users.docs[0].id);
+    //   }
+    // };
+    // getUserStatus();
+  }, [user]);
 
   return (
     <>
@@ -92,10 +100,7 @@ const Subscribe = () => {
           </Text>
           <Button
             isLoading={isSubmitting}
-            // onClick={() => {
-            //   onSubscribe();
-            // }}
-            onClick={redirectToCheckout}
+            onClick={() => createCheckoutSession(user.uid)}
           >
             Get Free Premium
           </Button>

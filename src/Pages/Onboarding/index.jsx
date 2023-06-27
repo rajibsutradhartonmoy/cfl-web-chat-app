@@ -17,8 +17,9 @@ import { useAuth } from "../../hooks/useAuth";
 import { Form, useForm } from "react-hook-form";
 import UnuthenticatedApp from "../../Components/UnuthenticatedApp";
 import { useNavigate } from "react-router-dom";
-import { createMember, createUser, queryUser } from "../../services/firebase";
+import { updateMember, createUser, queryUser } from "../../services/firebase";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
+import { isUserPremium } from "../../services/isUserPremium";
 
 const Onboarding = () => {
   const auth = getAuth();
@@ -39,18 +40,16 @@ const Onboarding = () => {
 
   const [page, setPage] = useState("");
   const onSubmit = async (data) => {
-    if (data.full_name === "") {
-      data.full_name = fullName;
+    if (data.displayName === "") {
+      data.displayName = fullName;
     }
-    data.email = email;
     data.uid = uid;
-    data.subscribed = false;
     setIsSubmitting(true);
 
     let array = [];
     const query = await queryUser("email", email);
 
-    query.forEach((doc) => {
+    query?.forEach((doc) => {
       array.push(doc.data());
     });
     const registered = array.filter((user) => {
@@ -59,8 +58,8 @@ const Onboarding = () => {
     if (registered.length > 0) {
       toast({ title: "User with email exist already", status: "warning" });
     } else {
-      const newUser = await createMember(data);
-      if (newUser) {
+      const updated = await updateMember(uid, data);
+      if (updated) {
         toast({ title: "Registration Successful", status: "success" });
         navigate("/subscribe");
       }
@@ -100,29 +99,38 @@ const Onboarding = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUserLoading(true);
+
       if (user) {
-        const getUserStatus = async () => {
-          const users = await queryUser("uid", user.uid);
-          if (users.docs.length > 0) {
-            if (users.docs[0].data().subscribed === true) {
-              setPage("chat");
-              navigate("/channels/general");
-            } else if (users.docs[0].data().subscribed === false) {
-              setPage("subscribe");
-              navigate("/subscribe");
-            }
+        const premium = async () => {
+          const premiumUser = await isUserPremium();
+          if (premiumUser) {
+            navigate("/channels/general");
           } else {
+            const getUserStatus = async () => {
+              const userData = await queryUser(user.uid);
+              if (userData) {
+                if (userData?.subscribed === true) {
+                  setPage("chat");
+                  navigate("/channels/general");
+                } else {
+                  setPage("subscribe");
+                  navigate("/subscribe");
+                }
+              } else {
+                setUserLoading(false);
+                setPage("onbarding");
+              }
+            };
+            getUserStatus();
+            setAuthState(true);
             setUserLoading(false);
-            setPage("onbarding");
+            setFullName(user.displayName);
+            setEmail(user.email);
+            setUid(user.uid);
+            setPage("onboarding");
           }
         };
-        getUserStatus();
-        setAuthState(true);
-        setUserLoading(false);
-        setFullName(user.displayName);
-        setEmail(user.email);
-        setUid(user.uid);
-        setPage("onboarding");
+        premium();
       } else {
         setAuthState(false);
         setUserLoading(false);
@@ -174,9 +182,9 @@ const Onboarding = () => {
                   <Input
                     type="text"
                     defaultValue={fullName}
-                    name="full_name"
+                    name="displayName"
                     required
-                    {...register("full_name")}
+                    {...register("displayName")}
                   />
                 </FormControl>
                 <FormControl>

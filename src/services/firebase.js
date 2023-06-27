@@ -11,7 +11,9 @@ import {
   query,
   orderBy,
   doc,
+  getDoc,
   updateDoc,
+  setDoc,
   where,
   deleteDoc,
 } from "firebase/firestore";
@@ -35,9 +37,25 @@ async function loginWithGoogle() {
   try {
     const provider = new GoogleAuthProvider();
     const auth = getAuth();
-
     const { user } = await signInWithPopup(auth, provider);
 
+    // await collection(db, "members").doc(user.uid).set({
+    //   uid: user.uid,
+    //   displayName: user.displayName,
+    //   displayPicture: user.photoURL,
+    //   email: user.email,
+    //   provider: user.providerData[0].providerId,
+    // });
+
+    console.log(user);
+    const member = {
+      uid: user.uid,
+      displayName: user.displayName,
+      displayPicture: user.photoURL,
+      email: user.email,
+      provider: user.providerData[0].providerId,
+    };
+    await setDoc(doc(db, "members", user.uid), member);
     return {
       uid: user.uid,
       displayName: user.displayName,
@@ -72,10 +90,11 @@ async function sendMessage(channelId, user, text) {
   }
 }
 // Create member document in firestor
-async function createMember(member) {
+async function updateMember(memberID, data) {
   try {
-    const memberDocRef = await addDoc(collection(db, "members"), member);
-    return memberDocRef;
+    const memberDocRef = doc(db, "members", memberID);
+    await updateDoc(memberDocRef, data);
+    return true;
   } catch (error) {
     console.log(error);
   }
@@ -89,18 +108,17 @@ async function createUser(user) {
   }
 }
 
-async function queryUser(param, paramvalue) {
-  const colRef = query(
-    collection(db, "members"),
-    where(param, "==", paramvalue)
-  );
+async function queryUser(id) {
+  const userRef = doc(db, "members", id);
   try {
-    const docsSnap = await getDocs(colRef);
+    const docsSnap = await getDoc(userRef);
+    console.log(docsSnap.data());
     return docsSnap;
   } catch (error) {
     console.log(error);
   }
 }
+
 //Reply message
 function replyMessage(channelId, messageId, replies) {
   const messageRef = doc(db, "chat-channels", channelId, "messages", messageId);
@@ -149,9 +167,10 @@ export {
   getMessages,
   replyMessage,
   createUser,
-  createMember,
+  updateMember,
   queryUser,
   updateUser,
   deleteMessage,
   storage,
+  app,
 };
