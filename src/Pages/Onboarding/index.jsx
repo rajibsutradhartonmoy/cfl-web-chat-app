@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { updateMember, createUser, queryUser } from "../../services/firebase";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { isUserPremium } from "../../services/isUserPremium";
+import { createCheckoutSession } from "../../services/createCheckoutSession";
 
 const Onboarding = () => {
   const auth = getAuth();
@@ -44,14 +45,13 @@ const Onboarding = () => {
       data.displayName = fullName;
     }
     data.uid = uid;
+    data.detailsUpdated = true;
     setIsSubmitting(true);
 
     let array = [];
-    const query = await queryUser("email", email);
+    const query = await queryUser(uid);
+    console.log("my user", query.data());
 
-    query?.forEach((doc) => {
-      array.push(doc.data());
-    });
     const registered = array.filter((user) => {
       return user.email === data.email;
     });
@@ -62,6 +62,7 @@ const Onboarding = () => {
       if (updated) {
         toast({ title: "Registration Successful", status: "success" });
         navigate("/subscribe");
+        createCheckoutSession(uid);
       }
     }
     setIsSubmitting(false);
@@ -109,12 +110,12 @@ const Onboarding = () => {
             const getUserStatus = async () => {
               const userData = await queryUser(user.uid);
               if (userData) {
-                if (userData?.subscribed === true) {
-                  setPage("chat");
-                  navigate("/channels/general");
-                } else {
+                if (userData.data()?.detailsUpdated === true) {
                   setPage("subscribe");
                   navigate("/subscribe");
+                } else {
+                  setUserLoading(false);
+                  setPage("onbarding");
                 }
               } else {
                 setUserLoading(false);

@@ -9,6 +9,7 @@ import {
 export const isUserPremium = async () => {
   const auth = getAuth();
   await auth.currentUser?.getIdToken(true);
-  const decodeToken = auth.currentUser?.getIdTokenResult();
-  return decodeToken?.claims?.stripeRole ? true : false;
+  const decodedToken = await auth.currentUser?.getIdTokenResult();
+  console.log("decoded Token", decodedToken);
+  return decodedToken?.claims?.stripeRole ? true : false;
 };

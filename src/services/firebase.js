@@ -54,6 +54,7 @@ async function loginWithGoogle() {
       displayPicture: user.photoURL,
       email: user.email,
       provider: user.providerData[0].providerId,
+      detailsUpdated: false,
     };
     await setDoc(doc(db, "members", user.uid), member);
     return {
