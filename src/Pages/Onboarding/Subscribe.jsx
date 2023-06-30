@@ -96,13 +96,13 @@ const Subscribe = () => {
           <Image width={"200px"} src="/assets/images/Launch-Logo-Updated.png" />
           <Text fontWeight={"bold"}>Ugrade To Free Premium</Text>
           <Text fontSize={"xl"} textAlign={"center"}>
-            Join our community to connect with other Cofounders
+            Ready to Start Your 30 days FREE?
           </Text>
           <Button
             isLoading={isSubmitting}
             onClick={() => createCheckoutSession(user.uid)}
           >
-            Get Free Premium
+            Start Your Trial Now!
           </Button>
         </VStack>
 
