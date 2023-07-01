@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { getMessages } from "../services/firebase";
 
-function useMessages(roomId) {
+function useMessages(path, roomId) {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = getMessages(roomId, setMessages);
+    alert(roomId);
+    const unsubscribe = getMessages(path, roomId, setMessages);
     return unsubscribe;
-  }, [roomId]);
+  }, [path, roomId]);
 
   return messages;
 }

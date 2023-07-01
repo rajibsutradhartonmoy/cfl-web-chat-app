@@ -16,6 +16,7 @@ function Router() {
         <Route exact path="/channels" element={<Chat />} />
 
         <Route exact path="/channels/:channelId" element={<Community />} />
+        <Route exact path="/dms/:channelId" element={<Community />} />
         <Route
           exact
           path="/api/auth/callback/google"

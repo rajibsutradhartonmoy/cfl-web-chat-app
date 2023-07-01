@@ -1,7 +1,16 @@
-import React from "react";
-import { VStack, HStack, Text } from "@chakra-ui/react";
-
-const RightSideBar = () => {
+import React, { useEffect, useState } from "react";
+import { VStack, HStack, Text, Spinner } from "@chakra-ui/react";
+import { fetchUsers } from "../services/firebase";
+import MemberCard from "./MemberCard";
+const RightSideBar = (props) => {
+  const [members, setMembers] = useState([]);
+  useEffect(() => {
+    const fetchMembers = async () => {
+      const members = await fetchUsers();
+      setMembers(members);
+    };
+    fetchMembers();
+  }, []);
   return (
     <VStack
       flex={1.5}
@@ -16,10 +25,20 @@ const RightSideBar = () => {
           Members
         </Text>
       </HStack>
-      <VStack>
-        <HStack>
-          <Text fontSize={"14px"}>Admins</Text>
-        </HStack>
+      <VStack width={"full"} gap={"10px"}>
+        {members.length > 0
+          ? members.map((member, id) => {
+              return (
+                <MemberCard
+                  displayImage={member.displayImage}
+                  displayName={member.displayName}
+                  key={id}
+                  uid={member.id}
+                  peerId={props.peerId}
+                />
+              );
+            })
+          : ""}
       </VStack>
     </VStack>
   );

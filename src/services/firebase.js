@@ -74,19 +74,42 @@ async function loginWithGoogle() {
 }
 
 //Write message document to firestore
-async function sendMessage(channelId, user, text) {
+async function sendMessage(path, channelId, user, text) {
+  alert(path);
   try {
-    const docRef = await addDoc(
-      collection(db, "chat-channels", channelId, "messages"),
-      {
-        uid: user.uid,
-        displayName: user.displayName,
-        text: text.trim(),
-        timestamp: serverTimestamp(),
-        displayPicture: user.photoURL,
-      }
-    );
-    return docRef;
+    if (path === "channels") {
+      const docRef = await addDoc(
+        collection(db, "chat-channels", channelId, "messages"),
+        {
+          uid: user.uid,
+          displayName: user.displayName,
+          text: text.trim(),
+          timestamp: serverTimestamp(),
+          displayPicture: user.photoURL,
+        }
+      );
+      return docRef;
+    } else if (path === "dms") {
+      const docRef = await setDoc(doc(db, "dms", channelId), {
+        messages: [text],
+      });
+      await setDoc(
+        doc(db, "userChats", user.uid),
+        {
+          [channelId]: {
+            userInfo: {
+              uid: user.uid,
+              displayName: user.displayName,
+              text: text.trim(),
+              displayPicture: user.photoURL,
+            },
+            date: serverTimestamp(),
+          },
+        },
+        { merge: true }
+      );
+      return docRef;
+    }
   } catch (error) {
     console.error(error);
   }
@@ -147,10 +170,15 @@ async function updateUser(param, paramvalue, assign) {
 }
 
 // Read messages documents from firestore
-function getMessages(roomId, callback) {
+function getMessages(path, roomId, callback) {
   return onSnapshot(
     query(
-      collection(db, "chat-channels", roomId, "messages"),
+      collection(
+        db,
+        path === "channels" ? "chat-channels" : path,
+        roomId,
+        "messages"
+      ),
       orderBy("timestamp", "asc")
     ),
     (querySnapshot) => {
@@ -161,6 +189,19 @@ function getMessages(roomId, callback) {
       callback(messages);
     }
   );
+}
+
+async function fetchUsers() {
+  const querySnapshot = await getDocs(collection(db, "members"));
+
+  const members = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    displayName: doc.data().displayName,
+    displayPicture: doc.data().displayPicture,
+  }));
+  console.table(members);
+
+  return members;
 }
 // Get single message from firestroe
 export {
@@ -173,6 +214,7 @@ export {
   queryUser,
   updateUser,
   deleteMessage,
+  fetchUsers,
   storage,
   app,
 };

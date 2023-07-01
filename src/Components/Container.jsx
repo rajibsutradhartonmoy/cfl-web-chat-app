@@ -4,9 +4,13 @@ import LeftSideBar from "./LeftSideBar";
 import ChatContent from "./ChatContent";
 import RightSideBar from "./RightSideBar";
 import { useAuth } from "../hooks/useAuth";
+import { useParams } from "react-router-dom";
 
 function Container() {
+  const params = useParams();
   const { user } = useAuth();
+  const channelId = params.channelId;
+
   return (
     <HStack width={"full"}>
       <Box display={["none", "none", "block"]}>
@@ -17,8 +21,8 @@ function Container() {
         />
       </Box>
 
-      <ChatContent />
-      <RightSideBar />
+      <ChatContent channelId={channelId} />
+      <RightSideBar peerId={user.uid} />
     </HStack>
   );
 }

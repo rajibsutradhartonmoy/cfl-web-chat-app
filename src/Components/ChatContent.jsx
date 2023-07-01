@@ -17,7 +17,7 @@ import {
 } from "react-icons/ai";
 import { ImAttachment } from "react-icons/im";
 import ChatCard from "./ChatCard";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useMessages } from "../hooks/useMessages";
 import { storage, replyMessage } from "../services/firebase";
@@ -30,12 +30,14 @@ import {
 import { serverTimestamp, updateDoc } from "firebase/firestore";
 import { BsArrowLeft, BsBack } from "react-icons/bs";
 
-function ChatContent() {
+function ChatContent(props) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const params = useParams();
-  const channel = params.channelId;
-  const messages = useMessages(channel);
+  const location = useLocation();
+  const { pathname } = location;
+  const splitLocation = pathname.split("/");
+  const channel = props.channelId;
+  const messages = useMessages(splitLocation[1], channel);
   const [messageFile, setmessageFile] = useState();
   const [percent, setPercent] = useState(0);
   const [message, setMessage] = useState("");
@@ -74,7 +76,12 @@ function ChatContent() {
           },
         ]);
       } else {
-        const docRef = await sendMessage(channel, user, message);
+        const docRef = await sendMessage(
+          splitLocation[1],
+          channel,
+          user,
+          message
+        );
         if (messageFile) {
           uploadFile(messageFile, docRef);
         }
