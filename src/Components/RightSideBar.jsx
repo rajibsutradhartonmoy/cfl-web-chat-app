@@ -30,7 +30,7 @@ const RightSideBar = (props) => {
           ? members.map((member, id) => {
               return (
                 <MemberCard
-                  displayImage={member.displayImage}
+                  displayPicture={member.displayPicture}
                   displayName={member.displayName}
                   key={id}
                   uid={member.id}

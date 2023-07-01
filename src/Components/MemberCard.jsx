@@ -10,7 +10,7 @@ const MemberCard = (props) => {
   return (
     <Link to={`/dms/${combinedId}`} style={{ width: "100%" }}>
       <HStack width={"full"} alignItems={"center"} gap={"10px"}>
-        <Avatar size={"sm"} src={props.displayImage} />
+        <Avatar size={"sm"} src={props.displayPicture} />
         <Text fontSize={"sm"}>{props.displayName}</Text>
       </HStack>
     </Link>

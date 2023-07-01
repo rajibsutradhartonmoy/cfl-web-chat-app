@@ -178,7 +178,9 @@ function ChatContent(props) {
           fontSize={"xl"}
           color={"#4F5660"}
         >
-          Welcome to the {channel} channel.
+          {splitLocation[1] === "channels"
+            ? `Welcome to the ${channel} channel`
+            : ""}
         </Text>
         {messages.length > 0 ? (
           messages.map((messageItem) => {
@@ -235,7 +237,9 @@ function ChatContent(props) {
           })
         ) : (
           <Text textAlign={"center"} width={"full"}>
-            No message in the {channel} channel. Be the first to drop a message!
+            {splitLocation[1] === "channels"
+              ? `No message in the ${channel} channel. Be the first to drop a message!`
+              : "Start the conversation"}
           </Text>
         )}
         <Box ref={lastMessageRef}></Box>

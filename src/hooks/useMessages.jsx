@@ -5,7 +5,6 @@ function useMessages(path, roomId) {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    alert(roomId);
     const unsubscribe = getMessages(path, roomId, setMessages);
     return unsubscribe;
   }, [path, roomId]);

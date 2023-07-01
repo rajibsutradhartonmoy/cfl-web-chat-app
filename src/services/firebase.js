@@ -75,7 +75,6 @@ async function loginWithGoogle() {
 
 //Write message document to firestore
 async function sendMessage(path, channelId, user, text) {
-  alert(path);
   try {
     if (path === "channels") {
       const docRef = await addDoc(
@@ -90,23 +89,15 @@ async function sendMessage(path, channelId, user, text) {
       );
       return docRef;
     } else if (path === "dms") {
-      const docRef = await setDoc(doc(db, "dms", channelId), {
-        messages: [text],
-      });
-      await setDoc(
-        doc(db, "userChats", user.uid),
+      const docRef = await addDoc(
+        collection(db, "dms", channelId, "messages"),
         {
-          [channelId]: {
-            userInfo: {
-              uid: user.uid,
-              displayName: user.displayName,
-              text: text.trim(),
-              displayPicture: user.photoURL,
-            },
-            date: serverTimestamp(),
-          },
-        },
-        { merge: true }
+          uid: user.uid,
+          displayName: user.displayName,
+          text: text.trim(),
+          timestamp: serverTimestamp(),
+          displayPicture: user.photoURL,
+        }
       );
       return docRef;
     }
