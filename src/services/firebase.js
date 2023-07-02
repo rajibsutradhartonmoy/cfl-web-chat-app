@@ -34,6 +34,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+//login
 async function loginWithGoogle() {
   try {
     const provider = new GoogleAuthProvider();
@@ -72,6 +73,12 @@ async function loginWithGoogle() {
     return null;
   }
 }
+
+//Logout user
+
+const handleLogout = () => {
+  getAuth().signOut();
+};
 
 //Write message document to firestore
 async function sendMessage(path, channelId, user, text) {
@@ -197,6 +204,7 @@ async function fetchUsers() {
 // Get single message from firestroe
 export {
   loginWithGoogle,
+  handleLogout,
   sendMessage,
   getMessages,
   replyMessage,

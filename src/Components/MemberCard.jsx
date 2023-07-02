@@ -9,7 +9,12 @@ const MemberCard = (props) => {
       : props.uid + props.peerId;
   return (
     <Link to={`/dms/${combinedId}`} style={{ width: "100%" }}>
-      <HStack width={"full"} alignItems={"center"} gap={"10px"}>
+      <HStack
+        width={"full"}
+        alignItems={"center"}
+        gap={"10px"}
+        _hover={{ color: "#5858df" }}
+      >
         <Avatar size={"sm"} src={props.displayPicture} />
         <Text fontSize={"sm"}>{props.displayName}</Text>
       </HStack>

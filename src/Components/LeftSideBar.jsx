@@ -8,9 +8,9 @@ import {
   Box,
   Image,
 } from "@chakra-ui/react";
-import { AiOutlineDown } from "react-icons/ai";
+import { AiOutlineDown, AiOutlineLogout } from "react-icons/ai";
 import ChatAvatar from "./ChatAvatar";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   FaGamepad,
   FaLaptopCode,
@@ -23,6 +23,7 @@ import {
   BsHeadphones,
 } from "react-icons/bs";
 import { IoIosPeople, IoMdSettings } from "react-icons/io";
+import { handleLogout } from "../services/firebase";
 const sideBarImage = [
   "https://i.postimg.cc/ZK7ngyd5/img1.png",
   "https://i.postimg.cc/Gm623wz0/img2.png",
@@ -62,6 +63,7 @@ const channels = [
   },
 ];
 const LeftSideBar = (props) => {
+  const navigate = useNavigate();
   const params = useParams();
   const channel = params.channelId;
   return (
@@ -126,14 +128,25 @@ const LeftSideBar = (props) => {
             width={"full"}
             borderRadius={"10px"}
             alignItems={"center"}
+            justifyContent={"space-between"}
           >
-            <Avatar size={"sm"} src={props.displayPicture} />
-            <VStack alignItems={"flex-start"} spacing={0}>
-              <Text fontSize={"12px"} color={"#4F5660"} fontWeight={"500"}>
-                {props.displayName}
-              </Text>
-              <Text fontSize={"10px"}> #{props.userId.slice(0, 5)}...</Text>
-            </VStack>
+            <HStack alignItems={"center"}>
+              <Avatar size={"sm"} src={props.displayPicture} />
+              <VStack alignItems={"flex-start"} spacing={0}>
+                <Text fontSize={"12px"} color={"#4F5660"} fontWeight={"500"}>
+                  {props.displayName}
+                </Text>
+                <Text fontSize={"10px"}> #{props.userId.slice(0, 5)}...</Text>
+              </VStack>
+            </HStack>
+
+            <AiOutlineLogout
+              cursor={"pointer"}
+              onClick={() => {
+                handleLogout();
+                navigate("/login");
+              }}
+            />
           </HStack>
         </Box>
       </VStack>

@@ -127,10 +127,7 @@ function ChatContent(props) {
   useEffect(() => {
     // 👇️ scroll to bottom every time messages change
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-    setShowRef(false);
-    setReferenceMessage(null);
-    setReferenceDisplay(null);
-    setMessage("");
+
     setmessageFile(null);
     setPercent(0);
     setMessageReply([]);
