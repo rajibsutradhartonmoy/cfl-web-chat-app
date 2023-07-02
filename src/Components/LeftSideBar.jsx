@@ -81,7 +81,7 @@ const LeftSideBar = (props) => {
         height={"100vh"}
         overflowY={"scroll"}
         position={"relative"}
-        padding={"10px"}
+        padding={"40px 10px"}
         width={["full", "full", "auto"]}
       >
         <HStack position={"sticky"} gap={"60px"} alignItems={"center"}>

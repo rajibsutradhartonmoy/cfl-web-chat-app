@@ -17,7 +17,7 @@ function Container() {
         <LeftSideBar
           displayName={user.displayName}
           userId={user.uid}
-          displayPicture={user.displayPicture}
+          displayPicture={user.photoURL}
         />
       </Box>
 

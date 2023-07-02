@@ -38,6 +38,7 @@ function ChatContent(props) {
   const splitLocation = pathname.split("/");
   const channel = props.channelId;
   const messages = useMessages(splitLocation[1], channel);
+  const [pageId, setPageId] = useState(splitLocation[2]);
   const [messageFile, setmessageFile] = useState();
   const [percent, setPercent] = useState(0);
   const [message, setMessage] = useState("");
@@ -133,6 +134,9 @@ function ChatContent(props) {
     setMessageReply([]);
   }, [messages]);
 
+  useEffect(() => {
+    setMessage("");
+  }, [pageId]);
   return (
     <VStack
       height={"100vh"}
