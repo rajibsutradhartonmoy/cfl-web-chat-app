@@ -36,31 +36,31 @@ const channels = [
     title: "💬 General 💬",
     icon: <FaGamepad fontSize={"24px"} />,
   },
-  {
-    id: "tech",
-    title: "💻 Science & Tech 💻",
-    icon: <FaLaptopCode fontSize={"24px"} />,
-  },
-  {
-    id: "idea",
-    title: "💡 Ideas 💡",
-    icon: <FaLightbulb fontSize={"24px"} />,
-  },
-  {
-    id: "news",
-    title: "🗞 News 🗞",
-    icon: <FaNewspaper fontSize={"24px"} />,
-  },
-  {
-    id: "mentorship",
-    title: "🥸 Mentorship 🥸",
-    icon: <BsFillPeopleFill fontSize={"24px"} />,
-  },
-  {
-    id: "community",
-    title: "🧑‍🤝‍🧑 Community 🧑‍🤝‍🧑",
-    icon: <IoIosPeople fontSize={"24px"} />,
-  },
+  // {
+  //   id: "tech",
+  //   title: "💻 Science & Tech 💻",
+  //   icon: <FaLaptopCode fontSize={"24px"} />,
+  // },
+  // {
+  //   id: "idea",
+  //   title: "💡 Ideas 💡",
+  //   icon: <FaLightbulb fontSize={"24px"} />,
+  // },
+  // {
+  //   id: "news",
+  //   title: "🗞 News 🗞",
+  //   icon: <FaNewspaper fontSize={"24px"} />,
+  // },
+  // {
+  //   id: "mentorship",
+  //   title: "🥸 Mentorship 🥸",
+  //   icon: <BsFillPeopleFill fontSize={"24px"} />,
+  // },
+  // {
+  //   id: "community",
+  //   title: "🧑‍🤝‍🧑 Community 🧑‍🤝‍🧑",
+  //   icon: <IoIosPeople fontSize={"24px"} />,
+  // },
 ];
 const LeftSideBar = (props) => {
   const navigate = useNavigate();
