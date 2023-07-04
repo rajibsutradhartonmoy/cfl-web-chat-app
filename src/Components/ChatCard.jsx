@@ -60,7 +60,7 @@ const ChatCard = ({
         borderRadius={"md"}
         ref={messageRef}
         onClick={() => {
-          alert(messageFile.split("?")[0].split("files")[1].split(".")[1]);
+          alert(messageFile.split("?")[0].split("files")[1]);
         }}
       >
         <Box

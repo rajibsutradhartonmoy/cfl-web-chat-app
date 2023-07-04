@@ -68,7 +68,13 @@ const LeftSideBar = (props) => {
   const channel = params.channelId;
   return (
     <HStack height={"100vh"} spacing={0} flex={2}>
-      <VStack bg={"#e3e5e8"} gap={"50px"} height={"100vh"} p={"40px 10px"}>
+      <VStack
+        bg={"#e3e5e8"}
+        gap={"50px"}
+        height={"100vh"}
+        p={"40px 10px"}
+        display={"none"}
+      >
         <ChatAvatar />
         <VStack justifyContent={"space-between"} gap={"10px"}>
           {sideBarImage.map((image, id) => {
