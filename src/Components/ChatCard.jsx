@@ -59,9 +59,9 @@ const ChatCard = ({
         position={"relative"}
         borderRadius={"md"}
         ref={messageRef}
-        onClick={() => {
-          alert(messageFile.split("?")[0].split("files")[1]);
-        }}
+        // onClick={() => {
+        //   alert(messageFile.split("?")[0].split("files")[1]);
+        // }}
       >
         <Box
           width={"full"}
