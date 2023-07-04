@@ -76,8 +76,9 @@ async function loginWithGoogle() {
 
 //Logout user
 
-const handleLogout = () => {
-  getAuth().signOut();
+const handleLogout = async () => {
+  const logout = await getAuth().signOut();
+  return logout;
 };
 
 //Write message document to firestore

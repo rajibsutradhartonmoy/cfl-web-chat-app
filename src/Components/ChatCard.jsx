@@ -59,6 +59,9 @@ const ChatCard = ({
         position={"relative"}
         borderRadius={"md"}
         ref={messageRef}
+        onClick={() => {
+          alert(messageFile.split("?")[0].split("files")[1].split(".")[1]);
+        }}
       >
         <Box
           width={"full"}
@@ -76,6 +79,7 @@ const ChatCard = ({
               fileType === "png" ||
               fileType === "jpeg" ||
               fileType === "webp" ||
+              fileType === "svg" ||
               fileType === "svg+xml" ? (
                 <Image src={messageFile} maxW={"200px"} borderRadius={"10px"} />
               ) : fileType === "pdf" ? (
@@ -91,9 +95,6 @@ const ChatCard = ({
                       width={"50px"}
                       borderRadius={"10px"}
                     />
-                    <Text fontSize={"xs"}>
-                      {messageFile.split("%")[1].split("?")[0]}
-                    </Text>
                   </Link>
                 </VStack>
               ) : fileType === "mp4" ? (

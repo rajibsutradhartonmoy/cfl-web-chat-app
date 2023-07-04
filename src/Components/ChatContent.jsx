@@ -199,7 +199,7 @@ function ChatContent(props) {
             if (chatImage) {
               messageItem.type = chatImage
                 .split("?")[0]
-                .split("%")[1]
+                .split("files")[1]
                 .split(".")[1];
             }
             return (
