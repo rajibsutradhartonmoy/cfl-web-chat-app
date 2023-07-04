@@ -74,7 +74,7 @@ const ChatCard = ({
         <VStack width={"full"} alignItems={"flex-start"}>
           {messageFile ? (
             <Box>
-              {fileType === "gif" ||
+              {/* {fileType === "gif" ||
               fileType === "jpg" ||
               fileType === "png" ||
               fileType === "jpeg" ||
@@ -103,7 +103,8 @@ const ChatCard = ({
                 </video>
               ) : (
                 ""
-              )}
+              )} */}
+              <Image src={messageFile} maxW={"200px"} borderRadius={"10px"} />
             </Box>
           ) : (
             ""
