@@ -27,7 +27,7 @@ const RightSideBar = (props) => {
         </Text>
       </HStack>
       <Input
-        placeholder="Search users"
+        placeholder="Search member"
         onChange={(e) => {
           if (e.target.value !== "") {
             const searchResult = members.filter((member) => {
