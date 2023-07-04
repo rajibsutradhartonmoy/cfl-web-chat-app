@@ -33,7 +33,7 @@ const sideBarImage = [
 const channels = [
   {
     id: "general",
-    title: "💬 General 💬",
+    title: "General ",
     icon: <FaGamepad fontSize={"24px"} />,
   },
   // {
@@ -72,7 +72,7 @@ const LeftSideBar = (props) => {
         bg={"#e3e5e8"}
         gap={"50px"}
         height={"100vh"}
-        p={"40px 10px"}
+        p={"20px 10px"}
         display={"none"}
       >
         <ChatAvatar />
@@ -87,7 +87,7 @@ const LeftSideBar = (props) => {
         height={"100vh"}
         overflowY={"scroll"}
         position={"relative"}
-        padding={"40px 10px"}
+        padding={"20px 10px"}
         width={["full", "full", "auto"]}
       >
         <HStack position={"sticky"} gap={"60px"} alignItems={"center"}>
