@@ -22,11 +22,12 @@ import { AiFillDelete, AiOutlineEllipsis } from "react-icons/ai";
 import { HiOutlineReply } from "react-icons/hi";
 import { replyMessage, storage, deleteMessage } from "../services/firebase";
 import { useAuth } from "../hooks/useAuth";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import MessageInput from "./MessageInput";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { updateDoc } from "firebase/firestore";
 import { LinkItUrl } from "react-linkify-it";
+
 const ChatCard = ({
   username,
   viewerId,
@@ -315,7 +316,9 @@ const ThreadDrawer = (props) => {
   const [messageFile, setMessageFile] = useState(null);
   const [fileType, setFileType] = useState(null);
   const [lastMessage, setLastMessage] = useState(props.replies);
-
+  const location = useLocation();
+  const { pathname } = location;
+  const splitLocation = pathname.split("/");
   const writeMessage = (e) => {
     setMessage(e.target.value);
   };
@@ -356,7 +359,7 @@ const ThreadDrawer = (props) => {
   };
   const onSendMessage = async () => {
     if (message.trim() !== "" || messageFile) {
-      replyMessage(channel, props.messageId, [
+      replyMessage(splitLocation[1], channel, props.messageId, [
         ...props.replies,
         {
           uid: user.uid,

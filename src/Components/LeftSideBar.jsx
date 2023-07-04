@@ -136,7 +136,6 @@ const LeftSideBar = (props) => {
                 <Text fontSize={"12px"} color={"#4F5660"} fontWeight={"500"}>
                   {props.displayName}
                 </Text>
-                <Text fontSize={"10px"}> #{props.userId.slice(0, 5)}...</Text>
               </VStack>
             </HStack>
 
