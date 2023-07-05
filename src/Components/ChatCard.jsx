@@ -405,7 +405,6 @@ const ThreadDrawer = (props) => {
       ]);
 
       const replyID = props.replies.length;
-      alert(replyID);
       //   const docRef = await sendMessage(channel, user, message);
       //   console.log(docRef);
       if (messageFile) {
