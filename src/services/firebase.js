@@ -203,6 +203,8 @@ async function fetchUsers() {
     id: doc.id,
     displayName: doc.data().displayName,
     displayPicture: doc.data().displayPicture,
+    company: doc.data()?.company_name,
+    about: doc.data()?.company_description,
   }));
   console.table(members);
 

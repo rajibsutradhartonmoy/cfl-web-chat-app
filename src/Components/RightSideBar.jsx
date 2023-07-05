@@ -47,6 +47,8 @@ const RightSideBar = (props) => {
                   <MemberCard
                     displayPicture={member.displayPicture}
                     displayName={member.displayName}
+                    company={member.company}
+                    about={member.about}
                     key={id}
                     uid={member.id}
                     peerId={props.peerId}
@@ -69,6 +71,8 @@ const RightSideBar = (props) => {
               return (
                 <MemberCard
                   displayPicture={member.displayPicture}
+                  company={member.company}
+                  about={member.about}
                   displayName={member.displayName}
                   key={id}
                   uid={member.id}
