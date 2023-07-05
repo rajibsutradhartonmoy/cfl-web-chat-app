@@ -15,6 +15,12 @@ import {
   DrawerHeader,
   DrawerBody,
   Link,
+  LinkBox,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { BsFillReplyFill } from "react-icons/bs";
@@ -42,7 +48,16 @@ const ChatCard = ({
   messageId,
   messageRef,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isReplyOpen,
+    onOpen: replyOpen,
+    onClose: isReplyClose,
+  } = useDisclosure();
+  const {
+    isOpen: isImageOpen,
+    onOpen: imageOpen,
+    onClose: isImageClose,
+  } = useDisclosure();
   const [showAction, setShowAction] = useState(false);
   const params = useParams();
   const channel = params.channelId;
@@ -104,7 +119,16 @@ const ChatCard = ({
               ) : (
                 ""
               )} */}
-              <Image src={messageFile} maxW={"200px"} borderRadius={"10px"} />
+              <Image
+                src={messageFile}
+                objectFit={"cover"}
+                maxW={"400px"}
+                borderRadius={"10px"}
+                cursor={"pointer"}
+                onClick={() => {
+                  imageOpen();
+                }}
+              />
             </Box>
           ) : (
             ""
@@ -165,7 +189,7 @@ const ChatCard = ({
                 <Tooltip label="Reply in thread" fontSize={"xs"}>
                   <span>
                     <BsFillReplyFill
-                      onClick={() => onOpen()}
+                      onClick={() => replyOpen()}
                       cursor={"pointer"}
                     />
                   </span>
@@ -201,7 +225,7 @@ const ChatCard = ({
               padding={"2"}
               color="#5865F2"
               cursor={"pointer"}
-              onClick={() => onOpen()}
+              onClick={() => replyOpen()}
               ml={"40px !important"}
             >
               <HiOutlineReply fontSize={"24px"} color="#5865F2" />
@@ -216,13 +240,18 @@ const ChatCard = ({
           ""
         )}
         <ThreadDrawer
-          isOpen={isOpen}
-          onClose={onClose}
+          isReplyOpen={isReplyOpen}
+          isReplyClose={isReplyClose}
           displayName={username}
           message={message}
           replies={replies ? replies : ""}
           messageId={messageId}
           displayPicture={displayPicture}
+        />
+        <ImageModal
+          isImageOpen={isImageOpen}
+          isImageClose={isImageClose}
+          image={messageFile}
         />
       </VStack>
     </>
@@ -396,9 +425,9 @@ const ThreadDrawer = (props) => {
 
   return (
     <Drawer
-      isOpen={props.isOpen}
+      isOpen={props.isReplyOpen}
       placement="right"
-      onClose={props.onClose}
+      onClose={props.isReplyClose}
       size={"md"}
     >
       <DrawerOverlay />
@@ -453,13 +482,18 @@ const ThreadDrawer = (props) => {
   );
 };
 const ImageModal = (props) => {
-  <Drawer
-    isOpen={props.imageOpen}
-    placement="right"
-    onClose={props.imageClose}
-    size={"md"}
-  >
-    <Image src={props.image} />
-  </Drawer>;
+  return (
+    <Modal isOpen={props.isImageOpen} onClose={props.isImageClose} size={"xl"}>
+      <ModalOverlay />
+
+      <ModalContent>
+        <ModalCloseButton />
+
+        <ModalBody>
+          <Image src={props.image} width={"full"} />
+        </ModalBody>
+      </ModalContent>
+    </Modal>
+  );
 };
 export default ChatCard;
