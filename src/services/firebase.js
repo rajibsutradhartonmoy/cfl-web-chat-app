@@ -145,7 +145,13 @@ async function queryUser(id) {
 
 //Reply message
 function replyMessage(path, channelId, messageId, replies) {
-  const messageRef = doc(db, path, channelId, "messages", messageId);
+  const messageRef = doc(
+    db,
+    path === "channels" ? "chat-channels" : path,
+    channelId,
+    "messages",
+    messageId
+  );
   updateDoc(messageRef, {
     replies: replies,
   });

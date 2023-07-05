@@ -347,10 +347,13 @@ const ThreadDrawer = (props) => {
           // download url
 
           getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-            replyMessage(channel, props.messageId, [
+            replyMessage(splitLocation[1], channel, props.messageId, [
               ...props.replies,
               {
-                ...props.replies[replyRef],
+                uid: user.uid,
+                displayName: user.displayName,
+                timestamp: new Date(),
+                displayPicture: user.photoURL,
                 messageFile: url,
               },
             ]);
@@ -372,7 +375,8 @@ const ThreadDrawer = (props) => {
         },
       ]);
 
-      const replyID = props.replies.length - 1;
+      const replyID = props.replies.length;
+      alert(replyID);
       //   const docRef = await sendMessage(channel, user, message);
       //   console.log(docRef);
       if (messageFile) {
