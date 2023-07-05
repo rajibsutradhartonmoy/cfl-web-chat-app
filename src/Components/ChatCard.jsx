@@ -448,4 +448,14 @@ const ThreadDrawer = (props) => {
     </Drawer>
   );
 };
+const ImageModal = (props) => {
+  <Drawer
+    isOpen={props.imageOpen}
+    placement="right"
+    onClose={props.imageClose}
+    size={"md"}
+  >
+    <Image src={props.image} />
+  </Drawer>;
+};
 export default ChatCard;

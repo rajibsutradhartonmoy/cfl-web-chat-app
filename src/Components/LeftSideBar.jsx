@@ -16,6 +16,7 @@ import {
   FaLaptopCode,
   FaLightbulb,
   FaNewspaper,
+  FaSuitcase,
 } from "react-icons/fa";
 import {
   BsFillPeopleFill,
@@ -34,7 +35,7 @@ const channels = [
   {
     id: "general",
     title: "General ",
-    icon: <FaGamepad fontSize={"24px"} />,
+    icon: <FaSuitcase fontSize={"24px"} />,
   },
   // {
   //   id: "tech",

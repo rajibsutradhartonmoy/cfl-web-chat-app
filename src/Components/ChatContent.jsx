@@ -180,7 +180,7 @@ function ChatContent(props) {
           color={"#4F5660"}
         >
           {splitLocation[1] === "channels"
-            ? `Welcome to the ${channel} channel`
+            ? `Welcome to CoFoundersLab Launch! Chat`
             : ""}
         </Text>
         {messages.length > 0 ? (
