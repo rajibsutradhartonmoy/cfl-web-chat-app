@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { VStack, HStack, Text, Spinner, Input, Box } from "@chakra-ui/react";
 import { fetchUsers } from "../services/firebase";
 import MemberCard from "./MemberCard";

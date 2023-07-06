@@ -49,7 +49,6 @@ async function loginWithGoogle() {
     //   provider: user.providerData[0].providerId,
     // });
 
-    console.log(user);
     const member = {
       uid: user.uid,
       displayName: user.displayName,
@@ -136,7 +135,6 @@ async function queryUser(id) {
   const userRef = doc(db, "members", id);
   try {
     const docsSnap = await getDoc(userRef);
-    console.log(docsSnap.data());
     return docsSnap;
   } catch (error) {
     console.log(error);
@@ -206,7 +204,6 @@ async function fetchUsers() {
     company: doc.data()?.company_name,
     about: doc.data()?.company_description,
   }));
-  console.table(members);
 
   return members;
 }

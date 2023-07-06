@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { Document, Page } from "react-pdf";
 import { sendMessage } from "../services/firebase";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
   AiFillCloseCircle,
   AiFillPlusCircle,
@@ -29,8 +29,9 @@ import {
 } from "firebase/storage";
 import { serverTimestamp, updateDoc } from "firebase/firestore";
 import { BsArrowLeft, BsBack } from "react-icons/bs";
-
+import { ChatContext } from "../Router";
 function ChatContent(props) {
+  const { otherUser } = useContext(ChatContext);
   const navigate = useNavigate();
   const { user } = useAuth();
   const location = useLocation();
@@ -44,20 +45,14 @@ function ChatContent(props) {
   const [message, setMessage] = useState("");
   const [showRef, setShowRef] = useState(false);
   const [messageReplies, setMessageReplies] = useState([]);
-  const [replyText, setReplyText] = useState("");
+
   const [messageReply, setMessageReply] = useState(null);
   const [messageId, setMessageId] = useState(null);
-  const [referenceMessage, setReferenceMessage] = useState(null);
-  const [resferenceDisplay, setReferenceDisplay] = useState(null);
+
   const [fileType, setFileType] = useState(null);
   const selectedFileRef = useRef(null);
   const lastMessageRef = useRef(null);
   const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
-
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-  }
 
   const writeMessage = (e) => {
     setMessage(e.target.value);
@@ -91,8 +86,7 @@ function ChatContent(props) {
     setShowRef(false);
     setMessage("");
     setmessageFile(null);
-    setReferenceMessage(null);
-    setReferenceDisplay(null);
+
     // setMessageReplies([]);
   };
 
@@ -161,9 +155,9 @@ function ChatContent(props) {
         pb={"10px"}
       >
         <BsArrowLeft fontSize={"30px"} onClick={() => navigate("/channels")} />
-        {/* <Text textTransform={"capitalize"} fontWeight={"500"} color={"#4F5660"}>
-          {channel}
-        </Text> */}
+        <Text textTransform={"capitalize"} fontWeight={"500"} color={"#4F5660"}>
+          {splitLocation[1] === "dms" ? otherUser : channel}
+        </Text>
       </HStack>
       <VStack
         width={"full"}
@@ -222,16 +216,6 @@ function ChatContent(props) {
                   }
                   setShowRef(true);
                   setMessageId(id);
-                  setReferenceDisplay(
-                    <React.Fragment>
-                      <Box width={"full"} padding={"5px"}>
-                        <Text fontSize={"xs"} color={"blue.400"} width={"full"}>
-                          {" "}
-                          Replying to {displayName}
-                        </Text>
-                      </Box>
-                    </React.Fragment>
-                  );
                 }}
               />
             );

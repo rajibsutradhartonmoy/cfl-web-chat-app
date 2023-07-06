@@ -10,10 +10,12 @@ import {
   PopoverCloseButton,
   PopoverAnchor,
 } from "@chakra-ui/react";
-import React from "react";
-import { Link } from "react-router-dom";
-
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ChatContext } from "../Router";
 const MemberCard = (props) => {
+  const { setOtherUser } = useContext(ChatContext);
+  const navigate = useNavigate();
   const combinedId =
     props.peerId > props.uid
       ? props.peerId + props.uid
@@ -29,9 +31,17 @@ const MemberCard = (props) => {
         <PopoverTrigger>
           <Avatar cursor={"pointer"} size={"sm"} src={props.displayPicture} />
         </PopoverTrigger>
-        <Link to={`/dms/${combinedId}`}>
-          <Text fontSize={"sm"}>{props.displayName}</Text>
-        </Link>
+
+        <Text
+          fontSize={"sm"}
+          cursor={"pointer"}
+          onClick={() => {
+            setOtherUser(props.displayName);
+            navigate(`/dms/${combinedId}`);
+          }}
+        >
+          {props.displayName}
+        </Text>
       </HStack>
 
       <PopoverContent>

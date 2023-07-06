@@ -1,14 +1,18 @@
 import { Avatar, Box, HStack, Spinner, Text, VStack } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import LeftSideBar from "../../Components/LeftSideBar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import RightSideBar from "../../Components/RightSideBar";
+export const MobileChatContext = createContext();
+
 function Chat() {
   const navigate = useNavigate();
   const auth = getAuth();
   const [user, setUser] = useState({});
+  const [mobileOtherUser, setMobileOtherUser] = useState("");
+
   const [userLoading, setUserLoading] = useState(true);
 
   useEffect(() => {
@@ -26,7 +30,7 @@ function Chat() {
   }, []);
 
   return (
-    <>
+    <MobileChatContext.Provider value={{ mobileOtherUser, setMobileOtherUser }}>
       {userLoading ? (
         <Spinner />
       ) : (
@@ -41,7 +45,7 @@ function Chat() {
           <Box height={"100vh"}></Box>
         </HStack>
       )}
-    </>
+    </MobileChatContext.Provider>
   );
 }
 
