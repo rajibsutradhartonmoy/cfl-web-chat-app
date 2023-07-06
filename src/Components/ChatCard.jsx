@@ -60,7 +60,7 @@ const ChatCard = ({
   } = useDisclosure();
   const [showAction, setShowAction] = useState(false);
 
-  const containYoutubeLink = message.includes("youtube.com/watch?v=");
+  const containYoutubeLink = message?.includes("youtube.com/watch?v=");
   const embedId = containYoutubeLink ? message.split("=")[1].slice(0, 11) : "";
 
   const params = useParams();
@@ -289,7 +289,7 @@ const ReplyChatCard = ({
     onOpen: imageOpen,
     onClose: isImageClose,
   } = useDisclosure();
-  const containYoutubeLink = message.includes("youtube.com/watch?v=");
+  const containYoutubeLink = message?.includes("youtube.com/watch?v=");
   const embedId = containYoutubeLink ? message.split("=")[1].slice(0, 11) : "";
   return (
     <VStack width={"full"} alignItems={"flex-start"} padding={"1"}>
