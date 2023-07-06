@@ -59,6 +59,10 @@ const ChatCard = ({
     onClose: isImageClose,
   } = useDisclosure();
   const [showAction, setShowAction] = useState(false);
+
+  const containYoutubeLink = message.includes("youtube.com/watch?v=");
+  const embedId = containYoutubeLink ? message.split("=")[1].slice(0, 11) : "";
+
   const params = useParams();
   const channel = params.channelId;
 
@@ -154,6 +158,21 @@ const ChatCard = ({
               <LinkItUrl className="purple">
                 <Text fontSize={"14px"}>{message}</Text>
               </LinkItUrl>
+              {containYoutubeLink ? (
+                <Box borderRadius={"10px"}>
+                  <iframe
+                    width="300px"
+                    height="150px"
+                    src={`https://www.youtube.com/embed/${embedId}`}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title="Embedded youtube"
+                    style={{ borderRadius: "10px" }}
+                  />
+                </Box>
+              ) : (
+                ""
+              )}
 
               {reactions && (
                 <HStack>
@@ -265,6 +284,11 @@ const ReplyChatCard = ({
   message,
   reactions,
 }) => {
+  const {
+    isOpen: isImageOpen,
+    onOpen: imageOpen,
+    onClose: isImageClose,
+  } = useDisclosure();
   return (
     <VStack width={"full"} alignItems={"flex-start"} padding={"1"}>
       <Box
@@ -277,7 +301,15 @@ const ReplyChatCard = ({
       ></Box>
       {messageFile ? (
         <Box>
-          <Image src={messageFile} maxW={"200px"} borderRadius={"10px"} />
+          <Image
+            cursor={"pointer"}
+            onClick={() => {
+              imageOpen();
+            }}
+            src={messageFile}
+            maxW={"200px"}
+            borderRadius={"10px"}
+          />
         </Box>
       ) : (
         ""
@@ -316,6 +348,11 @@ const ReplyChatCard = ({
                 : ""}
             </HStack>
           )}
+          <ImageModal
+            isImageOpen={isImageOpen}
+            isImageClose={isImageClose}
+            image={messageFile}
+          />
         </VStack>
         {/* {showAction && (
           <HStack
