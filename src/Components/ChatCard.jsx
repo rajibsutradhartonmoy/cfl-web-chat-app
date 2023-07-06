@@ -289,6 +289,8 @@ const ReplyChatCard = ({
     onOpen: imageOpen,
     onClose: isImageClose,
   } = useDisclosure();
+  const containYoutubeLink = message.includes("youtube.com/watch?v=");
+  const embedId = containYoutubeLink ? message.split("=")[1].slice(0, 11) : "";
   return (
     <VStack width={"full"} alignItems={"flex-start"} padding={"1"}>
       <Box
@@ -330,6 +332,22 @@ const ReplyChatCard = ({
           <LinkItUrl className="purple">
             <Text fontSize={"xs"}>{message}</Text>
           </LinkItUrl>
+          {containYoutubeLink ? (
+            <Box borderRadius={"10px"}>
+              <iframe
+                width="300px"
+                height="150px"
+                src={`https://www.youtube.com/embed/${embedId}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title="Embedded youtube"
+                style={{ borderRadius: "10px" }}
+              />
+            </Box>
+          ) : (
+            ""
+          )}
+
           {reactions && (
             <HStack>
               {reactions.length > 0
