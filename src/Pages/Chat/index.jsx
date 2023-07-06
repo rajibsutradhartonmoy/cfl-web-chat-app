@@ -4,6 +4,7 @@ import LeftSideBar from "../../Components/LeftSideBar";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import RightSideBar from "../../Components/RightSideBar";
 function Chat() {
   const navigate = useNavigate();
   const auth = getAuth();
@@ -34,7 +35,9 @@ function Chat() {
             displayName={user.displayName}
             userId={user.uid}
             displayPicture={user.displayPicture}
-          />
+          >
+            <RightSideBar peerId={user.uid} display={"flex"} />
+          </LeftSideBar>
           <Box height={"100vh"}></Box>
         </HStack>
       )}

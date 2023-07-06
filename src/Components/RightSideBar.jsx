@@ -19,7 +19,7 @@ const RightSideBar = (props) => {
       height={"100vh"}
       overflowY={"scroll"}
       padding={"40px 10px"}
-      display={["none", "none", "flex"]}
+      display={props.display}
     >
       <HStack position={"sticky"} gap={"60px"} alignItems={"center"}>
         <Text fontSize={"md"} fontWeight={"500"}>

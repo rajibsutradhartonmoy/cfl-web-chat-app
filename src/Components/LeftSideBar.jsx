@@ -11,6 +11,7 @@ import {
 import { AiOutlineDown, AiOutlineLogout } from "react-icons/ai";
 import ChatAvatar from "./ChatAvatar";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import RightSideBar from "./RightSideBar";
 import {
   FaGamepad,
   FaLaptopCode,
@@ -128,6 +129,9 @@ const LeftSideBar = (props) => {
               })
             : ""}
         </VStack>
+        <Box width={"full"} overflow={"scroll"}>
+          {props.children}
+        </Box>
         <Box padding={2} position={"absolute"} bottom={4} mx={1} width={"full"}>
           <HStack
             padding={1}

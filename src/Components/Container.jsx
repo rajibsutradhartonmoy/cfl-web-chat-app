@@ -22,7 +22,7 @@ function Container() {
       </Box>
 
       <ChatContent channelId={channelId} />
-      <RightSideBar peerId={user.uid} />
+      <RightSideBar peerId={user.uid} display={["none", "none", "flex"]} />
     </HStack>
   );
 }

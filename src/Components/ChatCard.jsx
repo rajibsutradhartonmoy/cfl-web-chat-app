@@ -126,7 +126,7 @@ const ChatCard = ({
               <Image
                 src={messageFile}
                 objectFit={"cover"}
-                maxW={"400px"}
+                maxW={["200px", "200px", "200px", "400px"]}
                 borderRadius={"10px"}
                 cursor={"pointer"}
                 onClick={() => {

@@ -161,9 +161,9 @@ function ChatContent(props) {
         pb={"10px"}
       >
         <BsArrowLeft fontSize={"30px"} onClick={() => navigate("/channels")} />
-        <Text textTransform={"capitalize"} fontWeight={"500"} color={"#4F5660"}>
+        {/* <Text textTransform={"capitalize"} fontWeight={"500"} color={"#4F5660"}>
           {channel}
-        </Text>
+        </Text> */}
       </HStack>
       <VStack
         width={"full"}
